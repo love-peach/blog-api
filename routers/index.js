@@ -6,6 +6,6 @@ const blog = require('./blog');
 router.prefix('/api');
 
 router.use('/', home.routes(), home.allowedMethods());
-router.use('/blog', blog.routes(), blog.allowedMethods());
+router.use('/blogs', blog.routes(), blog.allowedMethods());
 
 module.exports = router;
