@@ -5,13 +5,13 @@ const responseFormatter = apiPrefix => async (ctx, next) => {
     try {
       // 先去执行路由
       await next();
+
       ctx.body = {
         code: 0,
         message: 'success',
         result: ctx.body,
       };
     } catch (error) {
-      console.log(error);
       // 如果异常类型是API异常，将错误信息添加到响应体中返回。
       if (error instanceof ApiError) {
         ctx.body = {

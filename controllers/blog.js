@@ -21,7 +21,6 @@ exports.find = async (ctx) => {
     result = await dbHelper.findAll();
   }
 
-  console.log(result, 'result112233');
   ctx.body = result;
 };
 
@@ -46,12 +45,7 @@ exports.add = async (ctx) => {
   const dataObj = ctx.request.body;
   const result = await dbHelper.add(dataObj);
 
-  if (result) {
-    ctx.body = {
-      success: true,
-      data: result,
-    };
-  }
+  ctx.body = result;
 };
 
 /**
@@ -64,12 +58,7 @@ exports.update = async (ctx) => {
   const dataObj = Object.assign({}, ctxParams, ctx.request.body);
   const result = await dbHelper.update(dataObj);
 
-  if (result) {
-    ctx.body = {
-      success: true,
-      data: result,
-    };
-  }
+  ctx.body = result;
 };
 
 /**
@@ -81,8 +70,9 @@ exports.delete = async (ctx) => {
   // 路由参数 以及发送的参数可能都有 id 以 发送的 id 为准，如果没有，取路由中的 id
   const dataObj = Object.assign({}, ctxParams, ctx.request.body);
   const result = await dbHelper.delete(dataObj.id);
-  ctx.body = {
-    success: true,
-    data: result,
-  };
+  if (result) {
+    ctx.body = true;
+  } else {
+    throw new ApiError(ApiErrorNames.UNEXIST_ID);
+  }
 };

@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const mongoosePaginate = require('../plugins/mongoose-paginate');
 
-console.log(mongoosePaginate, 'mongoosePaginate');
 const schema = new mongoose.Schema({
   title: String, // 标题
   author: String, // 作者

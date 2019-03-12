@@ -54,7 +54,7 @@ exports.add = async (data) => {
  */
 exports.update = async (data) => {
   const { id, ...restData } = data;
-  const result = await Model.findByIdAndUpdate(id, {
+  const result = await Model.findOneAndUpdate({ _id: id }, {
     $set: { ...restData },
   }, {
     new: true, // 返回修改后的数据

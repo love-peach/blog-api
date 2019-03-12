@@ -21,7 +21,29 @@
 ## 简单测试接口
 
 ```sh
-curl -H 'Content-Type: application/json' -X POST -d '{"name":"XBox","price":3999}' http://localhost:3000/api/products
+curl -H 'Content-Type: application/json' -X POST -d '{"title":"新增一篇博客","author":"机器人"}' http://localhost:3000/api/blog
+```
+
+## 目录结构
+
+```sh
+.
+├── bin/-----------------启动目录
+├── config/--------------配置文件
+├── controllers/---------controller层
+├── dbhaper/-------------数据库的增删查改方法
+├── error/---------------错误表
+├── middleware/----------中间件
+├── models/--------------models层
+├── plugins/-------------插件 数据库分页插件等
+├── routers/-------------路由
+├── util/----------------工具方法
+├── .editorconfig--------统一编辑器格式
+├── .eslintrc.js---------eslint
+├── .gitignore-----------忽略文件
+├── app.js---------------入口文件
+├── package.json---------项目依赖配置
+└── README.md------------项目说明
 ```
 
 ## 参考资料
