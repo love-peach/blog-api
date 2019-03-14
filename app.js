@@ -9,7 +9,7 @@ const logger = require('koa-logger');
 const responseFormatter = require('./middleware/response_formatter');
 const routers = require('./routers/index');
 
-require('./dbhaper/db');
+require('./dbhelper/db');
 
 // error handler
 onerror(app);

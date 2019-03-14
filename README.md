@@ -31,7 +31,7 @@ curl -H 'Content-Type: application/json' -X POST -d '{"title":"新增一篇博�
 ├── bin/-----------------启动目录
 ├── config/--------------配置文件
 ├── controllers/---------controller层
-├── dbhaper/-------------数据库的增删查改方法
+├── dbhelper/------------数据库的增删查改方法
 ├── error/---------------错误表
 ├── middleware/----------中间件
 ├── models/--------------models层
@@ -177,6 +177,18 @@ const asyncReadFile = async function () {
 我认为它的约定大于它的定义，使得 api 在设计上有了一定的规范和原则，语义更加明确，清晰。
 
 参考 [githut api](https://api.github.com/)
+
+### mongoose exec() 与 then() 区别
+
+之所以将它们写在一起，是因为在查询的时候，好像 `Modal.find().then()` 和 `Modal.find().exec()` 好像都可以。但到底是用 `exex` 还是 `then` 呢？这就需要对这两个方法有所了解。
+
+mongoose 的所有查询操作返回的结果都是 `query` ，mongoose 封装的一个对象，并非一个完整的 promise，而且与 ES6 标准的 promise 有所出入，因此在使用 mongoose 的时候，一般加上这句 `mongoose.Promise = global.Promise;`。回到问题，因为 `query` 也是一个不完整的 promise 因此，可以使用 `.then()` 方法。而 `exec()` 会返回一个完整的 Promise 对象。
+
+而且，在本项目中，约定在有关数据操作的方法中 也就是 `/dbhelper/` 文件中的方法，都返回 `.exec()` 之后的 Promise。
+
+*需要注意的是 分页插件本身返回的就是 Promise 因此 Model.paginate 不需要 exec()。*
+
+*Model.create 返回的也是 Promise 不需要 exec()*
 
 ## 参考资料
 

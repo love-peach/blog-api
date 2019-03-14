@@ -1,4 +1,4 @@
-const dbHelper = require('../dbhaper/blog');
+const dbHelper = require('../dbhelper/blog');
 const tool = require('../util/tool');
 
 const ApiError = require('../error/api_error');
@@ -13,15 +13,23 @@ exports.find = async (ctx) => {
 
   if (reqQuery && !tool.isEmptyObject(reqQuery)) {
     if (reqQuery.id) {
-      result = await dbHelper.findById(reqQuery.id);
+      result = dbHelper.findById(reqQuery.id);
     } else {
-      result = await dbHelper.findSome(reqQuery);
+      result = dbHelper.findSome(reqQuery);
     }
   } else {
-    result = await dbHelper.findAll();
+    result = dbHelper.findAll();
   }
 
-  ctx.body = result;
+  await result.then((res) => {
+    if (res) {
+      ctx.body = res;
+    } else {
+      throw new ApiError(ApiErrorNames.UNEXIST_ID);
+    }
+  }).catch((err) => {
+    throw new ApiError(err.name, err.message);
+  });
 };
 
 /**
@@ -32,10 +40,11 @@ exports.detail = async (ctx) => {
   if (!tool.validatorsFun.numberAndCharacter(id)) {
     throw new ApiError(ApiErrorNames.LEGAL_ID);
   }
-  const result = await dbHelper.findById(id).catch((err) => {
+  await dbHelper.findById(id).then((res) => {
+    ctx.body = res;
+  }).catch((err) => {
     throw new ApiError(err.name, err.message);
   });
-  ctx.body = result;
 };
 
 /**
@@ -43,9 +52,12 @@ exports.detail = async (ctx) => {
  */
 exports.add = async (ctx) => {
   const dataObj = ctx.request.body;
-  const result = await dbHelper.add(dataObj);
 
-  ctx.body = result;
+  await dbHelper.add(dataObj).then((res) => {
+    ctx.body = res;
+  }).catch((err) => {
+    throw new ApiError(err.name, err.message);
+  });
 };
 
 /**
@@ -56,9 +68,11 @@ exports.update = async (ctx) => {
   // 合并 路由中的参数 以及 发送过来的参数
   // 路由参数 以及发送的参数可能都有 id 以 发送的 id 为准，如果没有，取路由中的 id
   const dataObj = Object.assign({}, ctxParams, ctx.request.body);
-  const result = await dbHelper.update(dataObj);
-
-  ctx.body = result;
+  await dbHelper.update(dataObj).then((res) => {
+    ctx.body = res;
+  }).catch((err) => {
+    throw new ApiError(err.name, err.message);
+  });
 };
 
 /**
@@ -69,10 +83,14 @@ exports.delete = async (ctx) => {
   // 合并 路由中的参数 以及 发送过来的参数
   // 路由参数 以及发送的参数可能都有 id 以 发送的 id 为准，如果没有，取路由中的 id
   const dataObj = Object.assign({}, ctxParams, ctx.request.body);
-  const result = await dbHelper.delete(dataObj.id);
-  if (result) {
-    ctx.body = true;
-  } else {
-    throw new ApiError(ApiErrorNames.UNEXIST_ID);
-  }
+
+  await dbHelper.delete(dataObj.id).then((res) => {
+    if (res) {
+      ctx.body = res;
+    } else {
+      throw new ApiError(ApiErrorNames.UNEXIST_ID);
+    }
+  }).catch((err) => {
+    throw new ApiError(err.name, err.message);
+  });
 };
