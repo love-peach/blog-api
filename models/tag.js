@@ -2,39 +2,18 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('../plugins/mongoose-paginate');
 
 const schema = new mongoose.Schema({
-  title: String, // 标题
-  author: String, // 作者
-  content: String, // 原数据
-  poster: String, // 海报
-  tag: Array, // 标签
-  // tagArr: Array, // 标签-数组
-  category: String, // 分类
-  categoryName: String, // 分类-显示
-  status: String, // 状态
-  statusName: String, // 状态-显示
-  viewed: { // 浏览过
+  label: {
+    type: String,
+    required: [true, '标签 label 必须'],
+  },
+  value: {
+    type: String,
+    unique: true,
+    required: [true, '标签 value 必须'],
+  },
+  rank: {
     type: Number,
     default: 0,
-  },
-  likeCount: { // 喜欢
-    type: Number,
-    default: 0,
-  },
-  commentCount: { // 评论数
-    type: Number,
-    default: 0,
-  },
-  likes: {
-    type: Array,
-    default: [],
-  },
-  downloadTimes: { // 下载次数
-    type: Number,
-    default: 0,
-  },
-  offState: { // 上架状态
-    type: Boolean,
-    default: true,
   },
   createdAt: { // 创建日期
     type: Date,
@@ -47,7 +26,6 @@ const schema = new mongoose.Schema({
 }, {
   timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
 });
-
 
 // 自动增加版本号
 /* Mongoose 仅在您使用时更新版本密钥save()。如果您使用update()，findOneAndUpdate()等等，Mongoose将不会 更新版本密钥。
@@ -73,4 +51,4 @@ schema.pre('findOneAndUpdate', function () {
 
 schema.plugin(mongoosePaginate);
 
-module.exports = mongoose.model('Blog', schema);
+module.exports = mongoose.model('Tag', schema);
