@@ -1,19 +1,19 @@
 const router = require('koa-router')();
-const blogController = require('../controllers/blog');
+const controller = require('../controllers/blog');
 
 // 查
-router.get('/', blogController.find);
+router.get('/', controller.find);
 
 // 查 动态路由
-router.get('/:id', blogController.detail);
+router.get('/:id', controller.detail);
 
 // 增
-router.post('/', blogController.add);
+router.post('/', controller.add);
 
 // 改
-router.put('/:id', blogController.update);
+router.put('/:id', controller.update);
 
 // 删
-router.del('/:id', blogController.delete);
+router.del('/:id', controller.delete);
 
 module.exports = router;

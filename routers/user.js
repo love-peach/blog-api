@@ -1,5 +1,5 @@
 const router = require('koa-router')();
-const controller = require('../controllers/tag');
+const controller = require('../controllers/user');
 
 // 查
 router.get('/', controller.find);

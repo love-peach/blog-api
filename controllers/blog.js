@@ -41,7 +41,11 @@ exports.detail = async (ctx) => {
     throw new ApiError(ApiErrorNames.LEGAL_ID);
   }
   await dbHelper.findById(id).then((res) => {
-    ctx.body = res;
+    if (res) {
+      ctx.body = res;
+    } else {
+      throw new ApiError(ApiErrorNames.UNEXIST_ID);
+    }
   }).catch((err) => {
     throw new ApiError(err.name, err.message);
   });

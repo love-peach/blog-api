@@ -1,4 +1,4 @@
-const dbHelper = require('../dbhelper/tag');
+const dbHelper = require('../dbhelper/user');
 const tool = require('../util/tool');
 
 const ApiError = require('../error/api_error');
