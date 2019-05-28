@@ -6,7 +6,22 @@ const Model = require('../models/blog');
 /**
  * 查找全部
  */
-exports.findAll = () => Model.find().exec();
+const populateObj = [
+  {
+    path: 'tags',
+    select: 'label value',
+  },
+  {
+    path: 'author',
+    select: 'userName',
+  },
+  {
+    path: 'category',
+    select: 'label value',
+  },
+];
+
+exports.findAll = () => Model.find().populate(populateObj).exec();
 
 /**
  * 查找多个 筛选
@@ -20,6 +35,7 @@ exports.findSome = (data) => {
     page: parseInt(page, 10),
     limit: parseInt(limit, 10),
     sort: sort || '-createdAt',
+    populate: populateObj,
   };
 
   if (title) {
@@ -33,7 +49,7 @@ exports.findSome = (data) => {
 /**
  * 查找单个 详情
  */
-exports.findById = id => Model.findById(id).exec();
+exports.findById = id => Model.findById(id).populate(populateObj).exec();
 
 /**
  * 新增

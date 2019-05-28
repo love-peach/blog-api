@@ -1,15 +1,24 @@
 const mongoose = require('mongoose');
+
 const mongoosePaginate = require('../plugins/mongoose-paginate');
 
 const schema = new mongoose.Schema({
   title: String, // 标题
-  author: String, // 作者
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  }, // 作者
   content: String, // 原数据
   poster: String, // 海报
-  tag: Array, // 标签
-  // tagArr: Array, // 标签-数组
-  category: String, // 分类
-  categoryName: String, // 分类-显示
+  tags: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Tag',
+  }], // 标签
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
+  }, // 分类
+  categoryName: String, // 分类-显示 可以通过虚拟属性实现
   status: String, // 状态
   statusName: String, // 状态-显示
   viewed: { // 浏览过
