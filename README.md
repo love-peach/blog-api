@@ -24,6 +24,10 @@
 curl -H 'Content-Type: application/json' -X POST -d '{"title":"新增一篇博客","author":"机器人"}' http://localhost:3000/api/blogs
 ```
 
+```sh
+curl http://localhost:3000/api/upload -H 'Content-Type: multipart/form-data' -X POST -F 'file=@/Users/xxx/Documents/image/card.jpg'
+```
+
 ## 目录结构
 
 ```sh

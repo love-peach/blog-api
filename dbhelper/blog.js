@@ -63,7 +63,7 @@ exports.add = data => Model.create(data);
 exports.update = (data) => {
   const { id, ...restData } = data;
   return Model.findOneAndUpdate({ _id: id }, {
-    $set: { ...restData },
+    ...restData,
   }, {
     new: true, // 返回修改后的数据
   }).exec();

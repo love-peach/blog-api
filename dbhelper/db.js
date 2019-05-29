@@ -8,6 +8,8 @@ mongoose.Promise = global.Promise;
  */
 mongoose.connect(config.database, {
   useNewUrlParser: true,
+  useFindAndModify: false,
+  useCreateIndex: true,
   config: {
     autoIndex: false,
   },

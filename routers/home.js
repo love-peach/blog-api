@@ -4,6 +4,7 @@ const urlPrefix = 'localhost:3000/api';
 
 router.get('/', async (ctx) => {
   ctx.body = {
+    upload_url: `${urlPrefix}/upload`,
     users_url: `${urlPrefix}/users`,
     blogs_url: `${urlPrefix}/blogs`,
     categories_url: `${urlPrefix}/categories`,
