@@ -3,9 +3,7 @@ const Model = require('../models/blog');
 // TODO: 此文件中最好返回 Promise。通过 .exec() 可以返回 Promise。
 // 需要注意的是 分页插件本身返回的就是 Promise 因此 Model.paginate 不需要 exec()。
 // Model.create 返回的也是 Promise
-/**
- * 查找全部
- */
+
 const populateObj = [
   {
     path: 'tags',
@@ -13,7 +11,12 @@ const populateObj = [
   },
   {
     path: 'author',
-    select: 'userName',
+    select: 'userName avatar',
+    populate: {
+      path: 'avatar',
+      select: 'path name',
+      model: 'Upload',
+    },
   },
   {
     path: 'category',
@@ -21,6 +24,9 @@ const populateObj = [
   },
 ];
 
+/**
+ * 查找全部
+ */
 exports.findAll = () => Model.find().populate(populateObj).exec();
 
 /**

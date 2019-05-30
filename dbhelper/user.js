@@ -3,10 +3,19 @@ const Model = require('../models/user');
 // TODO: 此文件中最好返回 Promise。通过 .exec() 可以返回 Promise。
 // 需要注意的是 分页插件本身返回的就是 Promise 因此 Model.paginate 不需要 exec()。
 // Model.create 返回的也是 Promise
+
+const populateObj = [
+  {
+    path: 'avatar',
+    select: 'path name',
+  },
+];
+
+
 /**
  * 查找全部
  */
-exports.findAll = () => Model.find().exec();
+exports.findAll = () => Model.find().populate(populateObj).exec();
 
 /**
  * 查找多个 筛选
@@ -20,6 +29,7 @@ exports.findSome = (data) => {
     page: parseInt(page, 10),
     limit: parseInt(limit, 10),
     sort: sort || '-createdAt',
+    populate: populateObj,
   };
 
   return Model.paginate(query, options);
@@ -28,7 +38,7 @@ exports.findSome = (data) => {
 /**
  * 查找单个 详情
  */
-exports.findById = id => Model.findById(id).exec();
+exports.findById = id => Model.findById(id).populate(populateObj).exec();
 
 /**
  * 新增

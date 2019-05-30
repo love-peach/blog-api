@@ -6,7 +6,10 @@ const schema = new mongoose.Schema({
   password: String,
   phone: String,
   email: String,
-  avatar: String,
+  avatar: {
+    type: mongoose.Schema.Types.ObjectId, // 这个 avatar 其实可以直接赋值，不用再通过 id 来级联了。这么做，是为了练习 populate 嵌套使用
+    ref: 'Upload',
+  },
   createdAt: { // 创建日期
     type: Date,
     default: Date.now(),
