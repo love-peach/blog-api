@@ -1,5 +1,4 @@
-const fs = require('fs');
-const path = require('path');
+const { cosUploader, checkFileType } = require('../util/upload-helper');
 
 const dbHelper = require('../dbhelper/upload');
 const tool = require('../util/tool');
@@ -61,22 +60,51 @@ exports.detail = async (ctx) => {
  */
 exports.add = async (ctx) => {
   // 上传文件三种方式
-  // 1、直接使用 koa-body 中间件，设置 uploadDir 即可；
-  // 2、创建可读流(fs.createReadStream )、创建可写流 (fs.createWriteStream)、可读流通过管道写入可写流 (reader.pipe)
+  // 1、创建可读流(fs.createReadStream )、创建可写流 (fs.createWriteStream)、可读流通过管道写入可写流 (reader.pipe)
+  // 2、直接使用 koa-body 中间件，设置 uploadDir 即可；
   // 3、对接第三方sdk 七牛云 腾讯cos 阿里 oss,返回 可访问地址。
 
   const { file } = ctx.request.files;
-  const dataObj = {
-    name: file.name,
-    path: file.path,
-  };
-  await dbHelper
-    .add(dataObj)
-    .then((res) => {
-      ctx.body = res;
+
+  // const dataObj = {
+  //   name: file.name,
+  //   path: file.path,
+  // };
+  // await dbHelper
+  //   .add(dataObj)
+  //   .then((res) => {
+  //     ctx.body = res;
+  //   })
+  //   .catch((err) => {
+  //     throw new ApiError(err.name, err.message);
+  //   });
+
+  if (!checkFileType(file.type)) {
+    throw new ApiError(ApiErrorNames.LEGAL_FILE_TYPE);
+  }
+
+  await cosUploader(ctx)
+    .then(async (data) => {
+      const dataObj = {
+        name: file.name,
+        path: data.Location,
+        size: file.size,
+      };
+      await dbHelper
+        .add(dataObj)
+        .then((res) => {
+          ctx.body = res;
+        })
+        .catch((err) => {
+          throw new ApiError(err.name, err.message);
+        });
     })
     .catch((err) => {
-      throw new ApiError(err.name, err.message);
+      if (typeof err.error === 'string') {
+        throw new ApiError('cos 配置错误', err.error);
+      } else {
+        throw new ApiError(err.Code, err.error.Message);
+      }
     });
 };
 

@@ -10,6 +10,7 @@ const schema = new mongoose.Schema({
     type: String,
     required: [true, '文件 名字 必须'],
   },
+  size: Number,
   status: { // 上架状态
     type: Boolean,
     default: true,
