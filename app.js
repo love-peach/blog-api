@@ -11,24 +11,30 @@ const logger = require('koa-logger');
 const responseFormatter = require('./middleware/response_formatter');
 const routers = require('./routers/index');
 
+const uploadHelper = require('./util/upload-helper');
+
 require('./dbhelper/db');
 
 // error handler
 onerror(app);
 
-console.log(path.join(__dirname, 'public/upload/'), 121);
-
 // middlewares
 app.use(koaBody({
   multipart: true,
+  encoding: 'gzip',
   formidable: {
     uploadDir: path.join(__dirname, 'public/upload/'), // 设置文件上传目录
     keepExtensions: true, // 保持文件的后缀
-    maxFieldsSize: 200 * 1024 * 1024, // 文件上传大小
-    // onFileBegin: (name, file) => { // 文件上传前的设置
-    //   console.log(`name: ${name}`);
-    //   console.log(file);
-    // },
+    maxFieldsSize: 1 * 1024 * 1024, // 文件上传大小
+    onFileBegin: (name, file) => { // 文件上传前的设置
+      // 最终要保存到的文件夹目录
+      const dir = path.join(__dirname, `public/upload/${uploadHelper.getUploadDirName()}`);
+      // 检查文件夹是否存在如果不存在则新建文件夹
+      uploadHelper.checkDirExist(dir);
+      // 重新覆盖 file.path 属性
+      // eslint-disable-next-line
+      file.path = `${dir}/${file.name}`;
+    },
   },
 }));
 app.use(json());
