@@ -35,7 +35,8 @@ const getFileDateDir = () => {
   const date = new Date();
   let month = Number.parseInt(date.getMonth(), 10) + 1;
   month = month.toString().length > 1 ? month : `0${month}`;
-  const dir = `${date.getFullYear()}${month}${date.getDate()}`;
+  const day = date.getDate() > 10 ? date.getDate() : `0${date.getDate()}`;
+  const dir = `${date.getFullYear()}${month}${day}`;
   return dir;
 };
 

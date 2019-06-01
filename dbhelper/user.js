@@ -5,10 +5,10 @@ const Model = require('../models/user');
 // Model.create 返回的也是 Promise
 
 const populateObj = [
-  {
-    path: 'avatar',
-    select: 'path name',
-  },
+  // {
+  //   path: 'avatarObj',
+  //   select: 'path name',
+  // },
 ];
 
 

@@ -4,12 +4,11 @@ const mongoosePaginate = require('../plugins/mongoose-paginate');
 const schema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, '分类 name 必须'],
+    required: [true, '资源 name 必须'],
   },
-  value: {
-    type: String,
-    unique: true,
-    required: [true, '分类 value 必须'],
+  status: {
+    type: Boolean,
+    default: true,
   },
   rank: {
     type: Number,
@@ -51,4 +50,4 @@ schema.pre('findOneAndUpdate', function () {
 
 schema.plugin(mongoosePaginate);
 
-module.exports = mongoose.model('Category', schema);
+module.exports = mongoose.model('ResourceType', schema);

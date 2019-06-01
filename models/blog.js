@@ -18,18 +18,12 @@ const schema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
   }, // 分类
-  categoryName: String, // 分类-显示 可以通过虚拟属性实现
+  comments: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Comment',
+  }],
   status: String, // 状态
-  statusName: String, // 状态-显示
   viewed: { // 浏览过
-    type: Number,
-    default: 0,
-  },
-  likeCount: { // 喜欢
-    type: Number,
-    default: 0,
-  },
-  commentCount: { // 评论数
     type: Number,
     default: 0,
   },
@@ -41,10 +35,6 @@ const schema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  offState: { // 上架状态
-    type: Boolean,
-    default: true,
-  },
   createdAt: { // 创建日期
     type: Date,
     default: Date.now(),
@@ -55,6 +45,14 @@ const schema = new mongoose.Schema({
   },
 }, {
   timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
+  toJSON: { virtuals: true },
+});
+
+schema.virtual('posterObj', {
+  ref: 'Upload',
+  localField: 'poster',
+  foreignField: 'path',
+  justOne: true,
 });
 
 

@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('../plugins/mongoose-paginate');
 
 const schema = new mongoose.Schema({
-  label: {
+  name: {
     type: String,
-    required: [true, '标签 label 必须'],
+    required: [true, '标签 name 必须'],
   },
   value: {
     type: String,

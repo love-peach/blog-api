@@ -2,18 +2,24 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('../plugins/mongoose-paginate');
 
 const schema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, '分类 name 必须'],
+  commentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Comment',
+    required: [true, '回复 commentId 必须'],
   },
-  value: {
-    type: String,
-    unique: true,
-    required: [true, '分类 value 必须'],
+  from: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: [true, '回复 from 必须'],
   },
-  rank: {
-    type: Number,
-    default: 0,
+  to: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: [true, '回复 to 必须'],
+  },
+  content: {
+    type: String,
+    required: [true, '回复 content 必须'],
   },
   createdAt: { // 创建日期
     type: Date,
@@ -25,7 +31,15 @@ const schema = new mongoose.Schema({
   },
 }, {
   timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
+  toJSON: { virtuals: true },
 });
+
+// schema.virtual('fromObj', {
+//   ref: 'User',
+//   localField: 'poster',
+//   foreignField: 'path',
+//   justOne: true,
+// });
 
 // 自动增加版本号
 /* Mongoose 仅在您使用时更新版本密钥save()。如果您使用update()，findOneAndUpdate()等等，Mongoose将不会 更新版本密钥。
@@ -51,4 +65,4 @@ schema.pre('findOneAndUpdate', function () {
 
 schema.plugin(mongoosePaginate);
 
-module.exports = mongoose.model('Category', schema);
+module.exports = mongoose.model('Reply', schema);

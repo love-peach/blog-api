@@ -9,7 +9,10 @@ router.get('/', async (ctx) => {
     blogs_url: `${urlPrefix}/blogs`,
     categories_url: `${urlPrefix}/categories`,
     tags_url: `${urlPrefix}/tags`,
+    resourcesType_url: `${urlPrefix}/resources_types`,
     resources_url: `${urlPrefix}/resources`,
+    comments_url: `${urlPrefix}/comments`,
+    replys_url: `${urlPrefix}/replys`,
   };
 });
 

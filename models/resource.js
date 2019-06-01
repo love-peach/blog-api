@@ -2,19 +2,20 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('../plugins/mongoose-paginate');
 
 const schema = new mongoose.Schema({
+  resourceType: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ResourceType',
+  },
   name: {
     type: String,
-    required: [true, '分类 name 必须'],
+    required: [true, '资源 name 必须'],
   },
-  value: {
+  poster: {
     type: String,
-    unique: true,
-    required: [true, '分类 value 必须'],
+    required: [true, '资源 poster 必须'],
   },
-  rank: {
-    type: Number,
-    default: 0,
-  },
+  url: String,
+  dis: String,
   createdAt: { // 创建日期
     type: Date,
     default: Date.now(),
@@ -25,6 +26,15 @@ const schema = new mongoose.Schema({
   },
 }, {
   timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
+  toJSON: { virtuals: true },
+  // toObject: { virtuals: true },
+});
+
+schema.virtual('posterObj', {
+  ref: 'Upload',
+  localField: 'poster',
+  foreignField: 'path',
+  justOne: true,
 });
 
 // 自动增加版本号
@@ -51,4 +61,4 @@ schema.pre('findOneAndUpdate', function () {
 
 schema.plugin(mongoosePaginate);
 
-module.exports = mongoose.model('Category', schema);
+module.exports = mongoose.model('Resource', schema);

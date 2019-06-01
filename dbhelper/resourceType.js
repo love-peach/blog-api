@@ -1,60 +1,36 @@
-const Model = require('../models/blog');
+const Model = require('../models/resourceType');
 
 // TODO: 此文件中最好返回 Promise。通过 .exec() 可以返回 Promise。
 // 需要注意的是 分页插件本身返回的就是 Promise 因此 Model.paginate 不需要 exec()。
 // Model.create 返回的也是 Promise
-
-const populateObj = [
-  {
-    path: 'tags',
-    select: 'name value',
-  },
-  {
-    path: 'author',
-    select: 'userName avatar',
-  },
-  // {
-  //   path: 'posterObj',
-  //   select: 'name path',
-  // },
-  {
-    path: 'category',
-    select: 'name value',
-  },
-];
-
 /**
  * 查找全部
  */
-exports.findAll = () => Model.find().populate(populateObj).exec();
+exports.findAll = () => Model.find().exec();
 
 /**
  * 查找多个 筛选
  */
 exports.findSome = (data) => {
   const {
-    title, page = 1, limit = 10, sort = '-createdAt',
+    page = 1, limit = 10, sort = '-createdAt',
   } = data;
   const query = {};
   const options = {
     page: parseInt(page, 10),
     limit: parseInt(limit, 10),
     sort: sort || '-createdAt',
-    populate: populateObj,
   };
 
-  if (title) {
-    const reg = new RegExp(title, 'i');
-    query.title = { $regex: reg };
-  }
+  const result = Model.paginate(query, options);
 
-  return Model.paginate(query, options);
+  return result;
 };
 
 /**
  * 查找单个 详情
  */
-exports.findById = id => Model.findById(id).populate(populateObj).exec();
+exports.findById = id => Model.findById(id).exec();
 
 /**
  * 新增

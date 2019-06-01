@@ -1,15 +1,19 @@
 const mongoose = require('mongoose');
 const mongoosePaginate = require('../plugins/mongoose-paginate');
+const tool = require('../util/tool');
 
 const schema = new mongoose.Schema({
-  userName: String,
-  password: String,
-  phone: String,
-  email: String,
-  avatar: {
-    type: mongoose.Schema.Types.ObjectId, // 这个 avatar 其实可以直接赋值，不用再通过 id 来级联了。这么做，是为了练习 populate 嵌套使用
-    ref: 'Upload',
-  },
+  userName: String, // 用户名
+  password: String, // 密码
+  phone: {
+    type: String,
+    match: [tool.validatorsExp.phone, '手机号码格式不正确'],
+  }, // 手机号
+  email: {
+    type: String,
+    match: [tool.validatorsExp.email, '邮箱格式不正确'],
+  }, // 邮箱
+  avatar: String, // 头像 跟 upload 的 path 关联
   createdAt: { // 创建日期
     type: Date,
     default: Date.now(),
@@ -20,6 +24,14 @@ const schema = new mongoose.Schema({
   },
 }, {
   timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
+  toJSON: { virtuals: true },
+});
+
+schema.virtual('avatarObj', {
+  ref: 'Upload',
+  localField: 'avatar',
+  foreignField: 'path',
+  justOne: true,
 });
 
 
