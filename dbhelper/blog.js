@@ -6,21 +6,21 @@ const Model = require('../models/blog');
 
 const populateObj = [
   {
-    path: 'tags',
+    path: 'author',
+    select: 'userName avatar',
+  },
+  {
+    path: 'category',
     select: 'name value',
   },
   {
-    path: 'author',
-    select: 'userName avatar',
+    path: 'tag',
+    select: 'name value',
   },
   // {
   //   path: 'posterObj',
   //   select: 'name path',
   // },
-  {
-    path: 'category',
-    select: 'name value',
-  },
 ];
 
 /**
@@ -33,7 +33,7 @@ exports.findAll = () => Model.find().populate(populateObj).exec();
  */
 exports.findSome = (data) => {
   const {
-    title, page = 1, limit = 10, sort = '-createdAt',
+    title, category, author, tag, page = 1, limit = 10, sort = '-createdAt',
   } = data;
   const query = {};
   const options = {
@@ -44,8 +44,18 @@ exports.findSome = (data) => {
   };
 
   if (title) {
-    const reg = new RegExp(title, 'i');
-    query.title = { $regex: reg };
+    query.title = { $regex: new RegExp(title, 'i') };
+  }
+
+  if (category) {
+    query.category = category;
+  }
+
+  if (tag) {
+    query.tag = { $elemMatch: { $eq: tag } };
+  }
+  if (author) {
+    query.author = author;
   }
 
   return Model.paginate(query, options);

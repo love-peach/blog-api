@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
 const mongoosePaginate = require('../plugins/mongoose-paginate');
 
 const schema = new mongoose.Schema({
   name: {
     type: String,
+    unique: true,
     required: [true, '分类 name 必须'],
   },
   value: {
@@ -50,5 +52,6 @@ schema.pre('findOneAndUpdate', function () {
 });
 
 schema.plugin(mongoosePaginate);
+schema.plugin(uniqueValidator);
 
 module.exports = mongoose.model('Category', schema);

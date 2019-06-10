@@ -1,28 +1,41 @@
 const mongoose = require('mongoose');
-
+const uniqueValidator = require('mongoose-unique-validator');
 const mongoosePaginate = require('../plugins/mongoose-paginate');
 
 const schema = new mongoose.Schema({
-  title: String, // 标题
+  title: {
+    type: String,
+    unique: true,
+    required: [true, '文章 title 必须'],
+  }, // 标题
   author: {
     type: mongoose.Schema.Types.ObjectId,
+    required: [true, '文章 author 必须'],
     ref: 'User',
-  }, // 作者
-  content: String, // 原数据
+  },
+  content: {
+    type: String,
+    required: [true, '文章 content 必须'],
+  },
   poster: String, // 海报
-  tags: [{
+  tag: [{
     type: mongoose.Schema.Types.ObjectId,
+    required: [true, '文章 tagValue 必须'],
     ref: 'Tag',
-  }], // 标签
+  }],
   category: {
     type: mongoose.Schema.Types.ObjectId,
+    required: [true, '文章 categoryValue 必须'],
     ref: 'Category',
-  }, // 分类
+  },
   comments: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Comment',
   }],
-  status: String, // 状态
+  status: {
+    type: Boolean,
+    default: true,
+  }, // 状态
   viewed: { // 浏览过
     type: Number,
     default: 0,
@@ -48,6 +61,12 @@ const schema = new mongoose.Schema({
   toJSON: { virtuals: true },
 });
 
+schema
+  .virtual('posterUrl')
+  .get(function () {
+    return `https://${this.poster}`;
+  });
+
 schema.virtual('posterObj', {
   ref: 'Upload',
   localField: 'poster',
@@ -55,6 +74,13 @@ schema.virtual('posterObj', {
   justOne: true,
 });
 
+
+// schema.virtual('categoryObj', {
+//   ref: 'Category',
+//   localField: 'categoryValue',
+//   foreignField: 'value',
+//   justOne: true,
+// });
 
 // 自动增加版本号
 /* Mongoose 仅在您使用时更新版本密钥save()。如果您使用update()，findOneAndUpdate()等等，Mongoose将不会 更新版本密钥。
@@ -79,5 +105,6 @@ schema.pre('findOneAndUpdate', function () {
 });
 
 schema.plugin(mongoosePaginate);
+schema.plugin(uniqueValidator);
 
 module.exports = mongoose.model('Blog', schema);

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
 const mongoosePaginate = require('../plugins/mongoose-paginate');
 const tool = require('../util/tool');
 
@@ -7,10 +8,12 @@ const schema = new mongoose.Schema({
   password: String, // 密码
   phone: {
     type: String,
+    unique: true,
     match: [tool.validatorsExp.phone, '手机号码格式不正确'],
   }, // 手机号
   email: {
     type: String,
+    unique: true,
     match: [tool.validatorsExp.email, '邮箱格式不正确'],
   }, // 邮箱
   avatar: String, // 头像 跟 upload 的 path 关联
@@ -27,12 +30,18 @@ const schema = new mongoose.Schema({
   toJSON: { virtuals: true },
 });
 
-schema.virtual('avatarObj', {
-  ref: 'Upload',
-  localField: 'avatar',
-  foreignField: 'path',
-  justOne: true,
-});
+schema
+  .virtual('avatarUrl')
+  .get(function () {
+    return `https://${this.avatar}`;
+  });
+
+// schema.virtual('avatarObj', {
+//   ref: 'Upload',
+//   localField: 'avatar',
+//   foreignField: 'path',
+//   justOne: true,
+// });
 
 
 // 自动增加版本号
@@ -58,5 +67,6 @@ schema.pre('findOneAndUpdate', function () {
 });
 
 schema.plugin(mongoosePaginate);
+schema.plugin(uniqueValidator);
 
 module.exports = mongoose.model('User', schema);
