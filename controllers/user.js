@@ -102,3 +102,36 @@ exports.delete = async (ctx) => {
     throw new ApiError(err.name, err.message);
   });
 };
+
+
+/**
+ * @desc 注册
+ */
+exports.signUp = async (ctx) => {
+  const dataObj = ctx.request.body;
+  await dbHelper.signUp(dataObj).then((res) => {
+    ctx.body = res;
+  }).catch((err) => {
+    throw new ApiError(err.name, err.message);
+  });
+};
+
+/**
+ * @desc 登录
+ */
+exports.signIn = async (ctx) => {
+  const dataObj = ctx.request.body;
+
+  await dbHelper.signIn(dataObj).then((res) => {
+    ctx.body = res;
+  }).catch((err) => {
+    throw new ApiError(err.name, err.message);
+  });
+};
+
+/**
+ * @desc 登出
+ */
+exports.signOut = async (ctx) => {
+  console.log('登出 ctx');
+};

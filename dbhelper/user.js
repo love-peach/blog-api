@@ -1,4 +1,8 @@
+const jwt = require('jsonwebtoken');
 const Model = require('../models/user');
+const ApiError = require('../error/api_error');
+const config = require('../config/index');
+const tokenHelper = require('../util/token-helper');
 
 // TODO: 此文件中最好返回 Promise。通过 .exec() 可以返回 Promise。
 // 需要注意的是 分页插件本身返回的就是 Promise 因此 Model.paginate 不需要 exec()。
@@ -44,6 +48,47 @@ exports.findById = id => Model.findById(id).populate(populateObj).exec();
  * 新增
  */
 exports.add = data => Model.create(data);
+
+/**
+ * 注册
+ */
+exports.signUp = (data) => {
+  const { userName } = data;
+
+  return new Promise((resolve, reject) => {
+    Model.findOne({ userName })
+      .then((res) => {
+        if (res) {
+          reject(new ApiError('UserExist', '用户名已存在'));
+        } else {
+          resolve(Model.create(data));
+        }
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};
+
+/**
+ * 登录
+ */
+exports.signIn = async (data) => {
+  const user = await Model.findOne({ userName: data.userName }).exec();
+  if (user) {
+    const isMatch = await Model.comparePassword(data.password, user.password);
+    if (isMatch) {
+      const token = tokenHelper.createToken(user);
+      const { password, ...restData } = user._doc;
+      return {
+        token,
+        ...restData,
+      };
+    }
+    return isMatch;
+  }
+  throw new ApiError('UserNotExist', '用户名不存在');
+};
 
 /**
  * 更新

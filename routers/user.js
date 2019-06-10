@@ -16,4 +16,13 @@ router.put('/:id', controller.update);
 // 删
 router.del('/:id', controller.delete);
 
+// 用户注册
+router.post('/signup', controller.signUp);
+
+// 用户登录
+router.post('/signin', controller.signIn);
+
+// 用户登出
+router.post('/signout', controller.signOut);
+
 module.exports = router;

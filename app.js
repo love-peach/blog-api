@@ -7,6 +7,7 @@ const json = require('koa-json');
 const onerror = require('koa-onerror');
 const koaBody = require('koa-body');
 const logger = require('koa-logger');
+const tokenHelper = require('./util/token-helper');
 
 const responseFormatter = require('./middleware/response_formatter');
 const routers = require('./routers/index');
@@ -46,6 +47,31 @@ app.use(logger());
 //   const ms = new Date() - start;
 //   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
 // });
+
+// 错误处理 主要是针对 jwt 中间件 抛出的 401 错误
+app.use((ctx, next) => next().catch((err) => {
+  if (err.status === 401) {
+    ctx.status = 401;
+    ctx.body = '登录过期，或者缺少 token';
+  } else {
+    throw err;
+  }
+}));
+
+app.use(tokenHelper.checkToken([
+  '/api/blogs',
+  '/api/categories',
+  '/api/tags',
+  '/api/resourceTypes',
+  '/api/resources',
+  '/api/users',
+  '/api/comments',
+  '/api/replys',
+], [
+  '/api/users/signup',
+  '/api/users/signin',
+  '/api/users/signout',
+]));
 
 // response formatter
 app.use(responseFormatter('/api'));

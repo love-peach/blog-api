@@ -24,6 +24,7 @@ const responseFormatter = apiPrefix => async (ctx, next) => {
           message: error.message,
         };
       } else {
+        console.log(ctx, 'ctx');
         // 走到这里 说明代码有错误 0_0
         /*
         error 对象解析:

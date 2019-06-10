@@ -1,6 +1,22 @@
 exports.isEmptyObject = obj => Object.keys(obj).length === 0;
 
 /**
+ * @description 从 ctx 中 获取 token
+ */
+exports.getTokenFromCtx = (ctx) => {
+  let myToken;
+  const authorization = ctx.get('Authorization');
+  if (authorization) {
+    [, myToken] = authorization.split(' ');
+  } else if (ctx.request && ctx.request.body && ctx.request.body.token) {
+    myToken = ctx.request.body.token;
+  } else if (ctx.query && ctx.query.token) {
+    myToken = ctx.query.token;
+  }
+  return myToken;
+};
+
+/**
  * @description 常规正则校验表达式
  */
 exports.validatorsExp = {
