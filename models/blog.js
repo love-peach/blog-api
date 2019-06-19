@@ -6,26 +6,29 @@ const schema = new mongoose.Schema({
   title: {
     type: String,
     unique: true,
-    required: [true, '文章 title 必须'],
+    required: [true, '必填字段'],
   }, // 标题
   author: {
     type: mongoose.Schema.Types.ObjectId,
-    required: [true, '文章 author 必须'],
+    required: [true, '必填字段'],
     ref: 'User',
   },
   content: {
     type: String,
-    required: [true, '文章 content 必须'],
+    required: [true, '必填字段'],
   },
-  poster: String, // 海报
+  poster: {
+    type: String,
+    required: [true, '必填字段'],
+  }, // 海报
   tag: [{
     type: mongoose.Schema.Types.ObjectId,
-    required: [true, '文章 tagValue 必须'],
+    required: [true, '必填字段'],
     ref: 'Tag',
   }],
   category: {
     type: mongoose.Schema.Types.ObjectId,
-    required: [true, '文章 categoryValue 必须'],
+    required: [true, '必填字段'],
     ref: 'Category',
   },
   comments: [{
@@ -61,26 +64,33 @@ const schema = new mongoose.Schema({
   toJSON: { virtuals: true },
 });
 
+schema.virtual('authorObj', {
+  ref: 'User',
+  localField: 'author',
+  foreignField: '_id',
+  justOne: true,
+});
+
+schema.virtual('categoryObj', {
+  ref: 'Category',
+  localField: 'category',
+  foreignField: '_id',
+  justOne: true,
+});
+
+schema.virtual('tagArray', {
+  ref: 'Tag',
+  localField: 'tag',
+  foreignField: '_id',
+  justOne: false,
+});
+
 schema
   .virtual('posterUrl')
   .get(function () {
     return `https://${this.poster}`;
   });
 
-schema.virtual('posterObj', {
-  ref: 'Upload',
-  localField: 'poster',
-  foreignField: 'path',
-  justOne: true,
-});
-
-
-// schema.virtual('categoryObj', {
-//   ref: 'Category',
-//   localField: 'categoryValue',
-//   foreignField: 'value',
-//   justOne: true,
-// });
 
 // 自动增加版本号
 /* Mongoose 仅在您使用时更新版本密钥save()。如果您使用update()，findOneAndUpdate()等等，Mongoose将不会 更新版本密钥。

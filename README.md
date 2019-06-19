@@ -176,7 +176,7 @@ const asyncReadFile = async function () {
 
 要实现 `RESTful API` 非常简单，只有满足一些特定的 `约束条件` 和 `原则`。
 
-我自己对于 restful 风格的认识，更加粗暴：通过 `get`、`post`、`put`、`delete`，请求方式，实现数据库的 `增`、`删`、`查`、`改`。
+我自己对于 restful 风格的认识，更加粗暴：通过 `get`、`post`、`put`、`delete`，请求方式，实现数据库的 `查`、`增`、`改`、`删`。
 
 我认为它的约定大于它的定义，使得 api 在设计上有了一定的规范和原则，语义更加明确，清晰。
 

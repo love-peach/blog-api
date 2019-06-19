@@ -1,7 +1,5 @@
-const jwt = require('jsonwebtoken');
 const Model = require('../models/user');
 const ApiError = require('../error/api_error');
-const config = require('../config/index');
 const tokenHelper = require('../util/token-helper');
 
 // TODO: 此文件中最好返回 Promise。通过 .exec() 可以返回 Promise。
@@ -78,14 +76,10 @@ exports.signIn = async (data) => {
   if (user) {
     const isMatch = await Model.comparePassword(data.password, user.password);
     if (isMatch) {
-      const token = tokenHelper.createToken(user);
-      const { password, ...restData } = user._doc;
-      return {
-        token,
-        ...restData,
-      };
+      return user._doc;
     }
-    return isMatch;
+    // return isMatch;
+    throw new ApiError('PasswordNotMatch', '账号或密码不匹配');
   }
   throw new ApiError('UserNotExist', '用户名不存在');
 };

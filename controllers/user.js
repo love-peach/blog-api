@@ -4,6 +4,9 @@ const tool = require('../util/tool');
 const ApiError = require('../error/api_error');
 const ApiErrorNames = require('../error/api_error_name');
 
+const tokenHelper = require('../util/token-helper');
+
+
 /**
  * 查
  */
@@ -110,7 +113,13 @@ exports.delete = async (ctx) => {
 exports.signUp = async (ctx) => {
   const dataObj = ctx.request.body;
   await dbHelper.signUp(dataObj).then((res) => {
-    ctx.body = res;
+    const token = tokenHelper.createToken(res);
+    const { password, ...restData } = res._doc;
+    ctx.res.setHeader('Authorization', token);
+    ctx.body = {
+      token,
+      ...restData,
+    };
   }).catch((err) => {
     throw new ApiError(err.name, err.message);
   });
@@ -123,7 +132,13 @@ exports.signIn = async (ctx) => {
   const dataObj = ctx.request.body;
 
   await dbHelper.signIn(dataObj).then((res) => {
-    ctx.body = res;
+    const token = tokenHelper.createToken(res);
+    const { password, ...restData } = res;
+    ctx.res.setHeader('Authorization', token);
+    ctx.body = {
+      token,
+      ...restData,
+    };
   }).catch((err) => {
     throw new ApiError(err.name, err.message);
   });
@@ -133,5 +148,5 @@ exports.signIn = async (ctx) => {
  * @desc 登出
  */
 exports.signOut = async (ctx) => {
-  console.log('登出 ctx');
+  console.log(ctx.request, '登出 ctx');
 };

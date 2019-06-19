@@ -29,7 +29,7 @@ exports.checkToken = (shouldCheckPathArray, unlessCheckPathArray) => async (ctx,
       }
     } else {
       ctx.status = 401;
-      ctx.body = '无 token';
+      ctx.body = '无 token，请登录';
     }
   } else {
     await next();

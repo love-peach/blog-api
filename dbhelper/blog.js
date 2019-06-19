@@ -6,21 +6,17 @@ const Model = require('../models/blog');
 
 const populateObj = [
   {
-    path: 'author',
+    path: 'authorObj',
     select: 'userName avatar',
   },
   {
-    path: 'category',
+    path: 'categoryObj',
     select: 'name value',
   },
   {
-    path: 'tag',
+    path: 'tagArray',
     select: 'name value',
   },
-  // {
-  //   path: 'posterObj',
-  //   select: 'name path',
-  // },
 ];
 
 /**
