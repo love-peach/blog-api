@@ -7,8 +7,7 @@ const Model = require('../models/resource');
 
 const populateObj = [
   {
-    path: 'resourceType',
-    select: 'name value rank',
+    path: 'resourceTypeObj',
   },
   {
     path: 'posterObj',

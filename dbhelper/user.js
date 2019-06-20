@@ -1,6 +1,5 @@
 const Model = require('../models/user');
 const ApiError = require('../error/api_error');
-const tokenHelper = require('../util/token-helper');
 
 // TODO: 此文件中最好返回 Promise。通过 .exec() 可以返回 Promise。
 // 需要注意的是 分页插件本身返回的就是 Promise 因此 Model.paginate 不需要 exec()。

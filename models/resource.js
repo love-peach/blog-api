@@ -6,15 +6,16 @@ const schema = new mongoose.Schema({
   resourceType: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'ResourceType',
+    required: [true, '必填字段'],
   },
   name: {
     type: String,
     unique: true,
-    required: [true, '资源 name 必须'],
+    required: [true, '必填字段'],
   },
   poster: {
     type: String,
-    required: [true, '资源 poster 必须'],
+    // required: [true, '必填字段'],
   },
   url: String,
   dis: String,
@@ -30,6 +31,14 @@ const schema = new mongoose.Schema({
   timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
   toJSON: { virtuals: true },
   // toObject: { virtuals: true },
+});
+
+
+schema.virtual('resourceTypeObj', {
+  ref: 'ResourceType',
+  localField: 'resourceType',
+  foreignField: '_id',
+  justOne: true,
 });
 
 schema.virtual('posterObj', {
