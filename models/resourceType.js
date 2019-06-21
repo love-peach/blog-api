@@ -16,6 +16,10 @@ const schema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  resource: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Resource',
+  }],
   createdAt: { // 创建日期
     type: Date,
     default: Date.now(),
@@ -27,6 +31,13 @@ const schema = new mongoose.Schema({
 }, {
   timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
 });
+
+// schema.virtual('resourceArray', {
+//   ref: 'Resource',
+//   localField: 'resource',
+//   foreignField: '_id',
+//   justOne: false,
+// });
 
 // 自动增加版本号
 /* Mongoose 仅在您使用时更新版本密钥save()。如果您使用update()，findOneAndUpdate()等等，Mongoose将不会 更新版本密钥。

@@ -4,6 +4,9 @@ const tool = require('../util/tool');
 const ApiError = require('../error/api_error');
 const ApiErrorNames = require('../error/api_error_name');
 
+const resourceTypeDbHelper = require('../dbhelper/resourceType');
+
+
 /**
  * 查
  */
@@ -58,6 +61,11 @@ exports.add = async (ctx) => {
   const dataObj = ctx.request.body;
 
   await dbHelper.add(dataObj).then((res) => {
+    // 添加resource item 的同时 更新 resourceType 的 resource 属性
+    resourceTypeDbHelper.updateResource({
+      resourceTypeId: res.resourceTypeId,
+      resourceId: res._id,
+    });
     ctx.body = res;
   }).catch((err) => {
     throw new ApiError(err.name, err.message);
@@ -94,6 +102,11 @@ exports.delete = async (ctx) => {
 
   await dbHelper.delete(dataObj.id).then((res) => {
     if (res) {
+      // 删除回复的同时 更新评论的回复
+      resourceTypeDbHelper.deleteResource({
+        resourceTypeId: res.resourceTypeId,
+        resourceId: res._id,
+      });
       ctx.body = res;
     } else {
       throw new ApiError(ApiErrorNames.UNEXIST_ID);

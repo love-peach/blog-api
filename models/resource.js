@@ -3,7 +3,7 @@ const uniqueValidator = require('mongoose-unique-validator');
 const mongoosePaginate = require('../plugins/mongoose-paginate');
 
 const schema = new mongoose.Schema({
-  resourceType: {
+  resourceTypeId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'ResourceType',
     required: [true, '必填字段'],
@@ -18,7 +18,7 @@ const schema = new mongoose.Schema({
     // required: [true, '必填字段'],
   },
   url: String,
-  dis: String,
+  desc: String,
   createdAt: { // 创建日期
     type: Date,
     default: Date.now(),
@@ -36,7 +36,7 @@ const schema = new mongoose.Schema({
 
 schema.virtual('resourceTypeObj', {
   ref: 'ResourceType',
-  localField: 'resourceType',
+  localField: 'resourceTypeId',
   foreignField: '_id',
   justOne: true,
 });
