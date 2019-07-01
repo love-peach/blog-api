@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const COS = require('cos-nodejs-sdk-v5');
 const cosConfig = require('../config/cos.config');
-const tool = require('../util/tool');
 
 // 使用永久密钥创建实例
 const cos = new COS({
@@ -41,11 +40,6 @@ const getFileDateDir = () => {
 };
 
 /**
- * @description 生成文件夹名称
- */
-const getUploadDirName = fileType => `${getFileTypeDir(fileType)}/${getFileDateDir()}`;
-
-/**
  * @description 检查文件夹路径是否存在，如果不存在则创建文件夹 递归创建目录 同步方法
  */
 const checkDirExist = (dirname) => {
@@ -59,14 +53,31 @@ const checkDirExist = (dirname) => {
   return true;
 };
 
+const getFileKey = (file, usedFor = '') => {
+  const fileTypeDir = getFileTypeDir(file.type);
+  let fileKey = '';
+  // poster avatar screenshot
+  switch (usedFor) {
+    case 'poster':
+      fileKey = `${fileTypeDir}/poster/${getFileDateDir()}`;
+      break;
+    case 'avatar':
+      fileKey = `${fileTypeDir}/avatar/${getFileDateDir()}`;
+      break;
+    case 'screenshot':
+      fileKey = `${fileTypeDir}/screenshot`;
+      break;
+    default:
+      fileKey = `${fileTypeDir}/${getFileDateDir()}`;
+  }
+  return fileKey;
+};
+
 /**
  * @description 腾讯云对象存储
  */
-const uploader = async (ctx) => {
-  const params = ctx.request.body;
-  const { file } = ctx.request.files;
-
-  const fileKey = !tool.isEmptyObject(params) && params.isAvatar.toString() === 'true' ? `/avatar/${file.name}` : `/${getUploadDirName(file.type)}/${file.name}`;
+const uploader = async (file, params) => {
+  const fileKey = `${getFileKey(file, params.usedFor)}/${file.name}`;
 
   return new Promise((resolve, reject) => {
     cos.sliceUploadFile({
@@ -85,10 +96,10 @@ const uploader = async (ctx) => {
 };
 
 module.exports = {
+  getFileKey,
   checkFileType,
   getFileTypeDir,
   getFileDateDir,
-  getUploadDirName,
   checkDirExist,
   cosUploader: uploader,
 };

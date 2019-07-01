@@ -12,7 +12,7 @@ const tokenHelper = require('./util/token-helper');
 const responseFormatter = require('./middleware/response_formatter');
 const routers = require('./routers/index');
 
-const { getUploadDirName, checkDirExist } = require('./util/upload-helper');
+const { getFileKey, checkDirExist } = require('./util/upload-helper');
 
 require('./dbhelper/db');
 
@@ -28,7 +28,7 @@ app.use(koaBody({
     maxFieldsSize: 1 * 1024 * 1024, // 文件上传大小
     onFileBegin: (name, file) => { // 文件上传前的设置
       // 最终要保存到的文件夹目录
-      const dir = path.join(__dirname, `public/upload/${getUploadDirName(file.type)}`);
+      const dir = path.join(__dirname, `public/upload/${getFileKey(file)}`);
       // 检查文件夹是否存在如果不存在则新建文件夹
       checkDirExist(dir);
       // 重新覆盖 file.path 属性
@@ -67,6 +67,7 @@ app.use(tokenHelper.checkToken([
   '/api/users',
   '/api/comments',
   '/api/replys',
+  // '/api/upload',
 ], [
   '/api/users/signup',
   '/api/users/signin',

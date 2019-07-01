@@ -6,6 +6,7 @@ const ApiErrorNames = require('../error/api_error_name');
 
 const resourceTypeDbHelper = require('../dbhelper/resourceType');
 
+const { screenshot, uploadScreenshot } = require('../util/puppeteer-helper');
 
 /**
  * 查
@@ -59,6 +60,14 @@ exports.detail = async (ctx) => {
  */
 exports.add = async (ctx) => {
   const dataObj = ctx.request.body;
+  const token = tool.getTokenFromCtx(ctx);
+
+  const resourcePoster = await screenshot(dataObj);
+
+
+  console.log(resourcePoster, 'resourcePoster');
+
+  uploadScreenshot(resourcePoster, token, ctx.request.header.origin);
 
   await dbHelper.add(dataObj).then((res) => {
     // 添加resource item 的同时 更新 resourceType 的 resource 属性
@@ -70,6 +79,7 @@ exports.add = async (ctx) => {
   }).catch((err) => {
     throw new ApiError(err.name, err.message);
   });
+  console.log('00');
 };
 
 /**

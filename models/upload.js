@@ -4,11 +4,16 @@ const mongoosePaginate = require('../plugins/mongoose-paginate');
 const schema = new mongoose.Schema({
   path: {
     type: String,
-    required: [true, '文件 路径 必须'],
+    required: [true, '必填字段'],
   },
   name: {
     type: String,
-    required: [true, '文件 名字 必须'],
+    required: [true, '必填字段'],
+  },
+  usedFor: {
+    type: String,
+    required: [true, '必填字段'],
+    default: 'file', // file poster avatar  screenshot
   },
   size: Number,
   status: { // 上架状态

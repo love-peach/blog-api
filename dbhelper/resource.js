@@ -4,7 +4,6 @@ const Model = require('../models/resource');
 // 需要注意的是 分页插件本身返回的就是 Promise 因此 Model.paginate 不需要 exec()。
 // Model.create 返回的也是 Promise
 
-
 const populateObj = [
   {
     path: 'resourceTypeObj',
@@ -48,7 +47,7 @@ exports.findById = id => Model.findById(id).populate(populateObj).exec();
 /**
  * 新增
  */
-exports.add = data => Model.create(data);
+exports.add = async data => Model.create(data);
 
 /**
  * 更新

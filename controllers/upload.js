@@ -65,30 +65,19 @@ exports.add = async (ctx) => {
   // 3、对接第三方sdk 七牛云 腾讯cos 阿里 oss,返回 可访问地址。
 
   const { file } = ctx.request.files;
-
-  // const dataObj = {
-  //   name: file.name,
-  //   path: file.path,
-  // };
-  // await dbHelper
-  //   .add(dataObj)
-  //   .then((res) => {
-  //     ctx.body = res;
-  //   })
-  //   .catch((err) => {
-  //     throw new ApiError(err.name, err.message);
-  //   });
+  const params = ctx.request.body;
 
   if (!checkFileType(file.type)) {
     throw new ApiError(ApiErrorNames.LEGAL_FILE_TYPE);
   }
 
-  await cosUploader(ctx)
+  await cosUploader(file, params)
     .then(async (data) => {
       const dataObj = {
         name: file.name,
         path: data.Location,
         size: file.size,
+        usedFor: params.usedFor,
       };
       await dbHelper
         .add(dataObj)

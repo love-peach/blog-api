@@ -13,11 +13,15 @@ const schema = new mongoose.Schema({
     unique: true,
     required: [true, '必填字段'],
   },
+  url: {
+    type: String,
+    unique: true,
+    required: [true, '必填字段'],
+  },
   poster: {
     type: String,
     // required: [true, '必填字段'],
   },
-  url: String,
   desc: String,
   createdAt: { // 创建日期
     type: Date,
