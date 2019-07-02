@@ -1,5 +1,5 @@
-const path = require('path');
 const fs = require('fs');
+const path = require('path');
 const puppeteer = require('puppeteer');
 const rp = require('request-promise');
 
@@ -9,8 +9,14 @@ const { checkDirExist } = require('../util/upload-helper');
  * @description 屏幕截图
  */
 const screenshot = async (params) => {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    defaultViewport: {
+      width: 1280,
+      height: 768,
+    },
+  });
   const page = await browser.newPage();
+  // await page.setViewport({});
   await page.goto(params.url);
   const dir = path.join(__dirname, '../public/screenshot');
   const screenshotpath = `${dir}/${params.name}.jpg`;
@@ -24,36 +30,31 @@ const screenshot = async (params) => {
 /**
  * @description 上传屏幕截图
  */
-const uploadScreenshot = (filePath, token, origin) => {
-  // form.append('usedFor', 'screenshot');
-
-  // const headers = form.getHeaders();
-  // headers.Authorization = `Bearer ${token}`;
-
+const uploadScreenshot = async (filePath, token, origin) => {
+  const file = await fs.createReadStream(filePath);
   const options = {
     method: 'POST',
-    uri: '/api/upload',
+    uri: `${origin}/api/upload`,
     formData: {
       usedFor: 'screenshot',
       file: {
-        value: fs.createReadStream(filePath),
+        value: file,
+        options: {},
       },
     },
     headers: {
       Authorization: token,
     },
   };
-
-  rp(options)
-    .then((body) => {
-      console.log(1);
-      // POST succeeded...
-    })
-    .catch((err) => {
-      console.log(2);
-
-      // POST failed...
-    });
+  return new Promise((resolve, reject) => {
+    rp(options)
+      .then((body) => {
+        resolve(JSON.parse(body));
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
 };
 
 module.exports = {

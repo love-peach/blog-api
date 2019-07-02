@@ -59,15 +59,16 @@ exports.detail = async (ctx) => {
  * 添加
  */
 exports.add = async (ctx) => {
-  const dataObj = ctx.request.body;
+  const params = ctx.request.body;
   const token = tool.getTokenFromCtx(ctx);
 
-  const resourcePoster = await screenshot(dataObj);
+  const resourcePoster = await screenshot(params);
+  const uploadObj = await uploadScreenshot(resourcePoster, token, ctx.request.header.origin);
 
-
-  console.log(resourcePoster, 'resourcePoster');
-
-  uploadScreenshot(resourcePoster, token, ctx.request.header.origin);
+  const dataObj = {
+    ...params,
+    poster: uploadObj.result.path,
+  };
 
   await dbHelper.add(dataObj).then((res) => {
     // 添加resource item 的同时 更新 resourceType 的 resource 属性
@@ -79,7 +80,6 @@ exports.add = async (ctx) => {
   }).catch((err) => {
     throw new ApiError(err.name, err.message);
   });
-  console.log('00');
 };
 
 /**
@@ -89,7 +89,22 @@ exports.update = async (ctx) => {
   const ctxParams = ctx.params;
   // 合并 路由中的参数 以及 发送过来的参数
   // 路由参数 以及发送的参数可能都有 id 以 发送的 id 为准，如果没有，取路由中的 id
-  const dataObj = Object.assign({}, ctxParams, ctx.request.body);
+  const mixParams = Object.assign({}, ctxParams, ctx.request.body);
+
+  let dataObj = {
+    ...mixParams,
+  };
+
+  if (mixParams.oldUrl !== mixParams.url) {
+    const token = tool.getTokenFromCtx(ctx);
+    const resourcePoster = await screenshot(mixParams);
+    const uploadObj = await uploadScreenshot(resourcePoster, token, ctx.request.header.origin);
+    dataObj = {
+      ...mixParams,
+      poster: uploadObj.result.path,
+    };
+  }
+
   await dbHelper.update(dataObj).then((res) => {
     if (res) {
       ctx.body = res;

@@ -3,6 +3,8 @@ const path = require('path');
 const COS = require('cos-nodejs-sdk-v5');
 const cosConfig = require('../config/cos.config');
 
+const IS_PROD = ['production', 'prod', 'pro'].includes(process.env.NODE_ENV);
+
 // 使用永久密钥创建实例
 const cos = new COS({
   SecretId: cosConfig.SecretId,
@@ -81,7 +83,7 @@ const uploader = async (file, params) => {
 
   return new Promise((resolve, reject) => {
     cos.sliceUploadFile({
-      Bucket: cosConfig.bucketName,
+      Bucket: IS_PROD ? cosConfig.bucketName : cosConfig.bucketNameDev,
       Region: cosConfig.bucketRegion,
       Key: fileKey,
       FilePath: file.path,

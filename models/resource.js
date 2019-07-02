@@ -20,7 +20,6 @@ const schema = new mongoose.Schema({
   },
   poster: {
     type: String,
-    // required: [true, '必填字段'],
   },
   desc: String,
   createdAt: { // 创建日期
@@ -37,18 +36,16 @@ const schema = new mongoose.Schema({
   // toObject: { virtuals: true },
 });
 
+schema
+  .virtual('posterUrl')
+  .get(function () {
+    return this.poster ? `https://${this.poster}?t=${new Date().getTime()}` : '';
+  });
 
 schema.virtual('resourceTypeObj', {
   ref: 'ResourceType',
   localField: 'resourceTypeId',
   foreignField: '_id',
-  justOne: true,
-});
-
-schema.virtual('posterObj', {
-  ref: 'Upload',
-  localField: 'poster',
-  foreignField: 'path',
   justOne: true,
 });
 
