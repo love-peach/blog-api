@@ -13,6 +13,7 @@ router.get('/', async (ctx) => {
     resources_url: `${urlPrefix}/resources`,
     comments_url: `${urlPrefix}/comments`,
     replys_url: `${urlPrefix}/replys`,
+    ebook: `${urlPrefix}/ebook`,
   };
 });
 

@@ -1,5 +1,8 @@
 module.exports = {
   root: true,
+  globals: {
+    document: true,
+  },
   "extends": "airbnb-base",
   'rules': {
     "no-underscore-dangle": 0,

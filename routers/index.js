@@ -10,6 +10,7 @@ const resource = require('./resource');
 const resourceType = require('./resourceType');
 const comment = require('./comment');
 const reply = require('./reply');
+const ebook = require('./ebook');
 
 router.prefix('/api');
 
@@ -23,5 +24,6 @@ router.use('/tags', tag.routes(), tag.allowedMethods());
 router.use('/upload', upload.routes(), upload.allowedMethods());
 router.use('/resources', resource.routes(), resource.allowedMethods());
 router.use('/resourceTypes', resourceType.routes(), resourceType.allowedMethods());
+router.use('/ebooks', ebook.routes(), ebook.allowedMethods());
 
 module.exports = router;
