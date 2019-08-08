@@ -146,7 +146,7 @@ const spiderForRank = async (url) => {
   const result = await page.evaluate(() => {
     const topListEle = [...document.querySelectorAll('.index_toplist')];
     return topListEle.map(ele => ({
-      titile: ele.querySelector('.toptab > span').innerText,
+      title: ele.querySelector('.toptab > span').innerText,
       rankFinal: [...ele.querySelectorAll('.topbooks:nth-child(1) > ul li')].map(child => ({
         name: child.querySelector('a').innerText,
         date: child.querySelector('span.hits').innerText,
