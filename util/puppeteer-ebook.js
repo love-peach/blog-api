@@ -197,6 +197,7 @@ const spiderForHome = async (url) => {
     }));
 
     data.rankList = rankListEle.map(ele => ({
+      category: ele.querySelector('h2').innerText,
       top: {
         poster: ele.querySelector('.top > .image img').src,
         name: ele.querySelector('.top dl > dt a').innerText,
@@ -226,6 +227,9 @@ const spiderForHome = async (url) => {
       author: ele.querySelector('span.s5').innerText,
       bookId: ele.querySelector('span.s2 > a').href.split('.')[2].split('/')[2],
     }));
+
+    data.lastUpdateTitle = document.querySelector('#newscontent .l > h2').innerText;
+    data.lastRecordTitle = document.querySelector('#newscontent .r > h2').innerText;
 
     return data;
   });
