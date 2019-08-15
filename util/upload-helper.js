@@ -1,7 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const COS = require('cos-nodejs-sdk-v5');
+const OSS = require('ali-oss');
 const cosConfig = require('../config/cos.config');
+const ossConfig = require('../config/oss.config');
 
 const IS_PROD = ['production', 'prod', 'pro'].includes(process.env.NODE_ENV);
 
@@ -9,6 +11,14 @@ const IS_PROD = ['production', 'prod', 'pro'].includes(process.env.NODE_ENV);
 const cos = new COS({
   SecretId: cosConfig.SecretId,
   SecretKey: cosConfig.SecretKey,
+});
+
+// 云账号AccessKey有所有API访问权限，建议遵循阿里云安全最佳实践，部署在服务端使用RAM子账号或STS，部署在客户端使用STS。
+const client = new OSS({
+  accessKeyId: ossConfig.AccessKeyID,
+  accessKeySecret: ossConfig.AccessKeySecret,
+  region: ossConfig.region,
+  bucket: IS_PROD ? ossConfig.bucket : ossConfig.bucketDev,
 });
 
 /**
@@ -78,7 +88,7 @@ const getFileKey = (file, usedFor = '') => {
 /**
  * @description 腾讯云对象存储
  */
-const uploader = async (file, params) => {
+const tengxunUploader = async (file, params) => {
   const fileKey = `${getFileKey(file, params.usedFor)}/${file.name}`;
 
   return new Promise((resolve, reject) => {
@@ -97,11 +107,30 @@ const uploader = async (file, params) => {
   });
 };
 
+
+/**
+ * @desc 阿里云对象存储
+ */
+const aliOssUploader = async (file, params) => {
+  const fileKey = `${getFileKey(file, params.usedFor)}/${file.name}`;
+  return new Promise((resolve, reject) => {
+    client
+      .put(fileKey, file.path)
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};
+
 module.exports = {
   getFileKey,
   checkFileType,
   getFileTypeDir,
   getFileDateDir,
   checkDirExist,
-  cosUploader: uploader,
+  tengxunCosUploader: tengxunUploader,
+  aliOssUploader,
 };

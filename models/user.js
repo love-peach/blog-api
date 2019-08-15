@@ -39,7 +39,7 @@ const schema = new mongoose.Schema({
 schema
   .virtual('avatarUrl')
   .get(function () {
-    return this.avatar ? `https://${this.avatar}` : '';
+    return this.avatar ? `${this.avatar}` : '';
   });
 
 // schema.virtual('avatarObj', {

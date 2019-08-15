@@ -3,13 +3,14 @@ const path = require('path');
 const puppeteer = require('puppeteer');
 const rp = require('request-promise');
 
-const { checkDirExist } = require('../util/upload-helper');
+const { checkDirExist } = require('./upload-helper');
 
 /**
  * @description 屏幕截图
  */
 const screenshot = async (params) => {
   const browser = await puppeteer.launch({
+    // headless: false,
     defaultViewport: {
       width: 1280,
       height: 768,
@@ -22,9 +23,24 @@ const screenshot = async (params) => {
   const screenshotpath = `${dir}/${params.name}.jpg`;
   checkDirExist(dir);
   await page.screenshot({ path: screenshotpath });
+
+  const webPageInfo = await page.evaluate(() => {
+    const elements = [...document.querySelectorAll('meta')];
+    const metaDescEle = elements.filter(ele => typeof ele.name !== 'undefined' && ele.name.toLowerCase() === 'description')[0];
+    const desc = metaDescEle ? metaDescEle.content : '';
+    const { title } = document;
+    return {
+      title,
+      metaDesc: desc,
+    };
+  });
+
   await browser.close();
 
-  return screenshotpath;
+  return {
+    path: screenshotpath,
+    ...webPageInfo,
+  };
 };
 
 /**

@@ -88,7 +88,7 @@ schema.virtual('tagArray', {
 schema
   .virtual('posterUrl')
   .get(function () {
-    return `https://${this.poster}`;
+    return `${this.poster}`;
   });
 
 

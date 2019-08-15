@@ -6,7 +6,7 @@ const ApiErrorNames = require('../error/api_error_name');
 
 const resourceTypeDbHelper = require('../dbhelper/resourceType');
 
-const { screenshot, uploadScreenshot } = require('../util/puppeteer-helper');
+const { screenshot, uploadScreenshot } = require('../util/puppeteer-screenshot');
 
 /**
  * 查
@@ -62,11 +62,12 @@ exports.add = async (ctx) => {
   const params = ctx.request.body;
   const token = tool.getTokenFromCtx(ctx);
 
-  const resourcePoster = await screenshot(params);
-  const uploadObj = await uploadScreenshot(resourcePoster, token, ctx.request.header.origin);
+  const resourceObj = await screenshot(params);
+  const uploadObj = await uploadScreenshot(resourceObj.path, token, ctx.request.header.origin);
 
   const dataObj = {
     ...params,
+    metaDesc: resourceObj.metaDesc,
     poster: uploadObj.result.path,
   };
 
@@ -97,10 +98,11 @@ exports.update = async (ctx) => {
 
   if (mixParams.oldUrl !== mixParams.url) {
     const token = tool.getTokenFromCtx(ctx);
-    const resourcePoster = await screenshot(mixParams);
-    const uploadObj = await uploadScreenshot(resourcePoster, token, ctx.request.header.origin);
+    const resourceObj = await screenshot(mixParams);
+    const uploadObj = await uploadScreenshot(resourceObj.path, token, ctx.request.header.origin);
     dataObj = {
       ...mixParams,
+      metaDesc: resourceObj.metaDesc,
       poster: uploadObj.result.path,
     };
   }

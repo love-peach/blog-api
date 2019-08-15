@@ -1,4 +1,4 @@
-const { cosUploader, checkFileType } = require('../util/upload-helper');
+const { tengxunCosUploader, aliOssUploader, checkFileType } = require('../util/upload-helper');
 
 const dbHelper = require('../dbhelper/upload');
 const tool = require('../util/tool');
@@ -58,6 +58,49 @@ exports.detail = async (ctx) => {
 /**
  * 添加
  */
+exports.addTengxun = async (ctx) => {
+  // 上传文件三种方式
+  // 1、创建可读流(fs.createReadStream )、创建可写流 (fs.createWriteStream)、可读流通过管道写入可写流 (reader.pipe)
+  // 2、直接使用 koa-body 中间件，设置 uploadDir 即可；
+  // 3、对接第三方sdk 七牛云 腾讯cos 阿里 oss,返回 可访问地址。
+
+  const { file } = ctx.request.files;
+  const params = ctx.request.body;
+
+  if (!checkFileType(file.type)) {
+    throw new ApiError(ApiErrorNames.LEGAL_FILE_TYPE);
+  }
+
+  await tengxunCosUploader(file, params)
+    .then(async (data) => {
+      const dataObj = {
+        name: file.name,
+        path: data.Location,
+        size: file.size,
+        usedFor: params.usedFor,
+      };
+      await dbHelper
+        .add(dataObj)
+        .then((res) => {
+          ctx.body = res;
+        })
+        .catch((err) => {
+          throw new ApiError(err.name, err.message);
+        });
+    })
+    .catch((err) => {
+      if (typeof err.error === 'string') {
+        throw new ApiError('cos 配置错误', err.error);
+      } else {
+        throw new ApiError(err.Code, err.error.Message);
+      }
+    });
+};
+
+
+/**
+ * 添加
+ */
 exports.add = async (ctx) => {
   // 上传文件三种方式
   // 1、创建可读流(fs.createReadStream )、创建可写流 (fs.createWriteStream)、可读流通过管道写入可写流 (reader.pipe)
@@ -71,11 +114,11 @@ exports.add = async (ctx) => {
     throw new ApiError(ApiErrorNames.LEGAL_FILE_TYPE);
   }
 
-  await cosUploader(file, params)
+  await aliOssUploader(file, params)
     .then(async (data) => {
       const dataObj = {
         name: file.name,
-        path: data.Location,
+        path: data.url,
         size: file.size,
         usedFor: params.usedFor,
       };

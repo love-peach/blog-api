@@ -22,6 +22,7 @@ const schema = new mongoose.Schema({
     type: String,
   },
   desc: String,
+  metaDesc: String,
   createdAt: { // 创建日期
     type: Date,
     default: Date.now(),
@@ -39,7 +40,7 @@ const schema = new mongoose.Schema({
 schema
   .virtual('posterUrl')
   .get(function () {
-    return this.poster ? `https://${this.poster}?t=${new Date().getTime()}` : '';
+    return this.poster ? `${this.poster}?t=${new Date().getTime()}` : '';
   });
 
 schema.virtual('resourceTypeObj', {
