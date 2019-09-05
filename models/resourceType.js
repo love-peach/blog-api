@@ -20,14 +20,6 @@ const schema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Resource',
   }],
-  createdAt: { // 创建日期
-    type: Date,
-    default: Date.now(),
-  },
-  updatedAt: { // 更新日期
-    type: Date,
-    default: Date.now(),
-  },
 }, {
   timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
 });

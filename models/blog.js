@@ -51,14 +51,6 @@ const schema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  createdAt: { // 创建日期
-    type: Date,
-    default: Date.now(),
-  },
-  updatedAt: { // 更新日期
-    type: Date,
-    default: Date.now(),
-  },
 }, {
   timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
   toJSON: { virtuals: true },

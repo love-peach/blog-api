@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 const dbHelper = require('../dbhelper/comment');
 const tool = require('../util/tool');
 
@@ -23,7 +24,18 @@ exports.find = async (ctx) => {
 
   await result.then((res) => {
     if (res) {
-      ctx.body = res;
+      const newRes = JSON.parse(JSON.stringify(res));
+      const {
+        limit, page, total, list,
+      } = newRes;
+      const newResList = list.map((item, index) => {
+        const orderIndex = total - index - (limit * (page - 1));
+        item.orderIndex = orderIndex;
+        return item;
+      });
+      newRes.list = newResList;
+
+      ctx.body = newRes;
     } else {
       throw new ApiError(ApiErrorNames.UNEXIST_ID);
     }

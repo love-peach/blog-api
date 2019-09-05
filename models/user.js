@@ -23,14 +23,6 @@ const schema = new mongoose.Schema({
     match: [tool.validatorsExp.email, '邮箱格式不正确'],
   }, // 邮箱
   avatar: String, // 头像 跟 upload 的 path 关联
-  createdAt: { // 创建日期
-    type: Date,
-    default: Date.now(),
-  },
-  updatedAt: { // 更新日期
-    type: Date,
-    default: Date.now(),
-  },
 }, {
   timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
   toJSON: { virtuals: true },
