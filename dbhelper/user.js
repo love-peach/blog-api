@@ -88,9 +88,12 @@ exports.signIn = async (data) => {
  */
 // TODO: 当更新一个不存在的 合法id 时，会返回 204
 exports.update = (data) => {
-  const { id, ...restData } = data;
+  const { id, password, ...restData } = data;
+  // 更新的时候 不会触发 pre('save') 中间件 所以需要手动生成一个新的加密 hash 保存起来
+  const passwordHash = Model.getPasswordHash(password);
   return Model.findOneAndUpdate({ _id: id }, {
     ...restData,
+    password: passwordHash,
   }, {
     new: true, // 返回修改后的数据
   }).exec();

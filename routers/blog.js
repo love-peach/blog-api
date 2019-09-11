@@ -10,6 +10,12 @@ router.get('/:id', controller.detail);
 // 增
 router.post('/', controller.add);
 
+// 喜欢
+router.post('/like', controller.like);
+
+// 不喜欢
+router.post('/unlike', controller.unlike);
+
 // 改
 router.put('/:id', controller.update);
 

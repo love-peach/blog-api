@@ -72,6 +72,10 @@ schema.pre('save', function (next) {
   next();
 });
 
+schema.statics.getPasswordHash = function (password) {
+  return bcrypt.hashSync(password, SALT_WORK_FACTOR);
+};
+
 // 实现登录验证时的密码验证
 schema.statics.comparePassword = function (_password, password) {
   return new Promise((resolve, reject) => {

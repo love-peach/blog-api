@@ -43,10 +43,10 @@ const schema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  likes: {
-    type: Array,
-    default: [],
-  },
+  likes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  }],
   downloadTimes: { // 下载次数
     type: Number,
     default: 0,
@@ -62,6 +62,14 @@ schema.virtual('authorObj', {
   foreignField: '_id',
   justOne: true,
 });
+
+schema.virtual('likesArray', {
+  ref: 'User',
+  localField: 'likes',
+  foreignField: '_id',
+  justOne: true,
+});
+
 
 schema.virtual('categoryObj', {
   ref: 'Category',

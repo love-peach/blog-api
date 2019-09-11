@@ -17,6 +17,10 @@ const populateObj = [
     path: 'tagArray',
     select: 'name value',
   },
+  {
+    path: 'likesArray',
+    select: 'userName avatar',
+  },
 ];
 
 /**
@@ -75,6 +79,43 @@ exports.update = (data) => {
   const { id, ...restData } = data;
   return Model.findOneAndUpdate({ _id: id }, {
     ...restData,
+  }, {
+    new: true, // 返回修改后的数据
+  }).exec();
+};
+
+/**
+ * 浏览次数 +1
+ */
+exports.viewCountIncrement = id => Model.findOneAndUpdate({ _id: id }, { $inc: { viewed: 1 } }, {
+  new: true,
+}).exec();
+
+/**
+ * 喜欢
+ */
+// TODO: 当更新一个不存在的 合法id 时，会返回 204
+exports.like = (data) => {
+  const { blogId, userId } = data;
+  return Model.findOneAndUpdate({ _id: blogId }, {
+    $push: {
+      likes: userId,
+    },
+  }, {
+    new: true, // 返回修改后的数据
+  }).exec();
+};
+
+/**
+ * 取消喜欢
+ */
+// TODO: 当更新一个不存在的 合法id 时，会返回 204
+exports.unlike = (data) => {
+  const { blogId, userId } = data;
+  return Model.findOneAndUpdate({ _id: blogId }, {
+    $pull: {
+      likes: userId,
+    },
   }, {
     new: true, // 返回修改后的数据
   }).exec();
