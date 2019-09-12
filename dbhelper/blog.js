@@ -33,7 +33,7 @@ exports.findAll = () => Model.find().populate(populateObj).exec();
  */
 exports.findSome = (data) => {
   const {
-    title, category, author, tag, page = 1, limit = 10, sort = '-createdAt',
+    keyword, title, category, author, tag, page = 1, limit = 10, sort = '-createdAt',
   } = data;
   const query = {};
   const options = {
@@ -54,8 +54,19 @@ exports.findSome = (data) => {
   if (tag) {
     query.tag = { $elemMatch: { $eq: tag } };
   }
+
   if (author) {
     query.author = author;
+  }
+
+  // 关键字模糊查询 标题 和 content
+  if (keyword) {
+    const reg = new RegExp(keyword, 'i');
+    const fuzzyQueryArray = [{ content: { $regex: reg } }];
+    if (!title) {
+      fuzzyQueryArray.push({ title: { $regex: reg } });
+    }
+    query.$or = fuzzyQueryArray;
   }
 
   return Model.paginate(query, options);
