@@ -52,7 +52,13 @@ exports.findSome = (data) => {
   }
 
   if (tag) {
-    query.tag = { $elemMatch: { $eq: tag } };
+    const objType = Object.prototype.toString.call(tag);
+    if (objType === '[object Array]') {
+      query.tag = { $all: tag };
+      // query.tag = { $elemMatch: { $in: tag } };
+    } else {
+      query.tag = { $elemMatch: { $eq: tag } };
+    }
   }
 
   if (author) {
