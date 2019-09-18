@@ -11,6 +11,7 @@ const schema = new mongoose.Schema({
     type: String,
     unique: true,
   }, // 用户名
+  nicName: String,
   password: String, // 密码
   phone: {
     type: String,
@@ -23,6 +24,7 @@ const schema = new mongoose.Schema({
     match: [tool.validatorsExp.email, '邮箱格式不正确'],
   }, // 邮箱
   avatar: String, // 头像 跟 upload 的 path 关联
+  briefDesc: String, // 个人说明
 }, {
   timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
   toJSON: { virtuals: true },
