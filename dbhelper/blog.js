@@ -33,7 +33,7 @@ exports.findAll = () => Model.find().populate(populateObj).exec();
  */
 exports.findSome = (data) => {
   const {
-    keyword, title, category, author, tag, page = 1, limit = 10, sort = '-createdAt',
+    keyword, title, category, author, tag, likes, page = 1, limit = 10, sort = '-createdAt',
   } = data;
   const query = {};
   const options = {
@@ -59,6 +59,10 @@ exports.findSome = (data) => {
     } else {
       query.tag = { $elemMatch: { $eq: tag } };
     }
+  }
+
+  if (likes) {
+    query.likes = { $elemMatch: { $eq: likes } };
   }
 
   if (author) {

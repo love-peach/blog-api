@@ -4,6 +4,7 @@ const mongoosePaginate = require('../plugins/mongoose-paginate');
 const schema = new mongoose.Schema({
   blogId: {
     type: mongoose.Schema.Types.ObjectId,
+    ref: 'Blog',
     required: [true, '评论 blogId 必须'],
   },
   from: {
@@ -24,12 +25,12 @@ const schema = new mongoose.Schema({
   toJSON: { virtuals: true },
 });
 
-// schema.virtual('fromObj', {
-//   ref: 'User',
-//   localField: 'poster',
-//   foreignField: 'path',
-//   justOne: true,
-// });
+schema.virtual('blogObj', {
+  ref: 'Blog',
+  localField: 'blogId',
+  foreignField: '_id',
+  justOne: true,
+});
 
 // 自动增加版本号
 /* Mongoose 仅在您使用时更新版本密钥save()。如果您使用update()，findOneAndUpdate()等等，Mongoose将不会 更新版本密钥。

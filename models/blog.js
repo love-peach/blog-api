@@ -85,13 +85,6 @@ schema.virtual('tagArray', {
   justOne: false,
 });
 
-schema
-  .virtual('posterUrl')
-  .get(function () {
-    return `${this.poster}`;
-  });
-
-
 // 自动增加版本号
 /* Mongoose 仅在您使用时更新版本密钥save()。如果您使用update()，findOneAndUpdate()等等，Mongoose将不会 更新版本密钥。
 作为解决方法，您可以使用以下中间件。参考 https://mongoosejs.com/docs/guide.html#versionKey */

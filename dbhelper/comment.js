@@ -6,6 +6,10 @@ const Model = require('../models/comment');
 
 const populateObj = [
   {
+    path: 'blogObj',
+    select: 'title',
+  },
+  {
     path: 'from',
     select: 'userName avatar',
   },
@@ -34,7 +38,7 @@ exports.findAll = () => Model.find().populate(populateObj).exec();
  */
 exports.findSome = (data) => {
   const {
-    blogId, page = 1, limit = 10, sort = '-createdAt',
+    blogId, from, page = 1, limit = 10, sort = '-createdAt',
   } = data;
   const query = {};
   const options = {
@@ -47,6 +51,10 @@ exports.findSome = (data) => {
 
   if (blogId) {
     query.blogId = blogId;
+  }
+
+  if (from) {
+    query.from = from;
   }
 
   const result = Model.paginate(query, options);
