@@ -16,6 +16,10 @@ const schema = new mongoose.Schema({
     type: String,
     required: [true, '评论 content 必须'],
   },
+  status: {
+    type: Boolean,
+    default: false,
+  }, // 状态
   reply: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Reply',

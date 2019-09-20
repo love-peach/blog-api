@@ -12,6 +12,7 @@ const populateObj = [
   {
     path: 'from',
     select: 'userName avatar',
+    match: { userName: 'admin' },
   },
   {
     path: 'reply',
@@ -38,8 +39,9 @@ exports.findAll = () => Model.find().populate(populateObj).exec();
  */
 exports.findSome = (data) => {
   const {
-    blogId, from, page = 1, limit = 10, sort = '-createdAt',
+    blogId, from, content, status = true, page = 1, limit = 10, sort = '-createdAt',
   } = data;
+  console.log(data, 'data');
   const query = {};
   const options = {
     page: parseInt(page, 10),
@@ -48,6 +50,9 @@ exports.findSome = (data) => {
     populate: populateObj,
   };
 
+  if (status !== 'all') {
+    query.status = status === true || status === 'true';
+  }
 
   if (blogId) {
     query.blogId = blogId;
@@ -56,6 +61,12 @@ exports.findSome = (data) => {
   if (from) {
     query.from = from;
   }
+
+  if (content) {
+    query.content = { $regex: new RegExp(content, 'i') };
+  }
+
+  console.log(JSON.stringify(query), 'query');
 
   const result = Model.paginate(query, options);
 
