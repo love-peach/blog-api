@@ -83,6 +83,27 @@ exports.signIn = async (data) => {
   throw new ApiError('UserNotExist', '用户名不存在');
 };
 
+
+/**
+ * 修改密码
+ */
+exports.changePwd = async (data) => {
+  const user = await Model.findOne({ userName: data.userName }).exec();
+  if (user) {
+    const isMatch = await Model.comparePassword(data.passwordOld, user.password);
+    if (isMatch) {
+      const newData = {
+        password: Model.getPasswordHash(data.password),
+      };
+      return Model.findOneAndUpdate({ _id: data.userId }, newData, {
+        new: true, // 返回修改后的数据
+      }).exec();
+    }
+    throw new ApiError('PasswordNotMatch', '账号或密码不匹配');
+  }
+  throw new ApiError('UserNotExist', '用户名不存在');
+};
+
 /**
  * 更新
  */

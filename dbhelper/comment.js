@@ -41,7 +41,6 @@ exports.findSome = (data) => {
   const {
     blogId, from, content, status = true, page = 1, limit = 10, sort = '-createdAt',
   } = data;
-  console.log(data, 'data');
   const query = {};
   const options = {
     page: parseInt(page, 10),
@@ -65,8 +64,6 @@ exports.findSome = (data) => {
   if (content) {
     query.content = { $regex: new RegExp(content, 'i') };
   }
-
-  console.log(JSON.stringify(query), 'query');
 
   const result = Model.paginate(query, options);
 

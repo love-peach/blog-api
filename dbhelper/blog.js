@@ -33,7 +33,7 @@ exports.findAll = () => Model.find().populate(populateObj).exec();
  */
 exports.findSome = (data) => {
   const {
-    keyword, title, category, author, tag, likes, page = 1, limit = 10, sort = '-createdAt',
+    keyword, title, category, author, tag, likes, status = true, page = 1, limit = 10, sort = '-createdAt',
   } = data;
   const query = {};
   const options = {
@@ -42,6 +42,10 @@ exports.findSome = (data) => {
     sort: sort || '-createdAt',
     populate: populateObj,
   };
+
+  if (status !== 'all') {
+    query.status = status === true || status === 'true';
+  }
 
   if (title) {
     query.title = { $regex: new RegExp(title, 'i') };
@@ -98,6 +102,7 @@ exports.add = data => Model.create(data);
 // TODO: 当更新一个不存在的 合法id 时，会返回 204
 exports.update = (data) => {
   const { id, ...restData } = data;
+  console.log(data, 'data');
   return Model.findOneAndUpdate({ _id: id }, {
     ...restData,
   }, {

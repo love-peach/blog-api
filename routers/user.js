@@ -17,6 +17,9 @@ router.put('/:id', controller.update);
 router.del('/:id', controller.delete);
 
 // 用户注册
+router.post('/changePwd', controller.changePwd);
+
+// 用户注册
 router.post('/signup', controller.signUp);
 
 // 用户登录

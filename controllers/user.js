@@ -144,6 +144,25 @@ exports.signIn = async (ctx) => {
   });
 };
 
+
+/**
+ * @desc 修改密码
+ */
+exports.changePwd = async (ctx) => {
+  const dataObj = ctx.request.body;
+  await dbHelper.changePwd(dataObj).then((res) => {
+    const token = tokenHelper.createToken(res);
+    const { password, ...restData } = res._doc;
+    ctx.res.setHeader('Authorization', token);
+    ctx.body = {
+      token,
+      ...restData,
+    };
+  }).catch((err) => {
+    throw new ApiError(err.name, err.message);
+  });
+};
+
 /**
  * @desc 登出
  */

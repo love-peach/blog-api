@@ -112,7 +112,6 @@ exports.like = async (ctx) => {
   // 合并 路由中的参数 以及 发送过来的参数
   // 路由参数 以及发送的参数可能都有 id 以 发送的 id 为准，如果没有，取路由中的 id
   const dataObj = Object.assign({}, ctxParams, ctx.request.body);
-  console.log(dataObj, 'dataObj');
   await dbHelper.like(dataObj).then((res) => {
     if (res) {
       ctx.body = res;

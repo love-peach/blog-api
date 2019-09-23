@@ -3,7 +3,7 @@ const config = require('../config/index');
 const tool = require('../util/tool');
 
 exports.createToken = (user) => {
-  const token = jwt.sign({ userId: user._id }, config.tokenSecret, { expiresIn: '1h' });
+  const token = jwt.sign({ userId: user._id, userName: user.userName }, config.tokenSecret, { expiresIn: '1h' });
   return token;
 };
 
@@ -19,9 +19,8 @@ exports.checkToken = (shouldCheckPathArray, unlessCheckPathArray) => async (ctx,
     const token = tool.getTokenFromCtx(ctx);
     if (token) {
       try {
-        jwt.verify(token, config.tokenSecret, {
-          complete: true,
-        });
+        const a = jwt.verify(token, config.tokenSecret);
+        console.log(a, 'a');
         await next();
       } catch (error) {
         ctx.status = 401;

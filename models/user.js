@@ -10,19 +10,24 @@ const schema = new mongoose.Schema({
   userName: {
     type: String,
     unique: true,
-  }, // 用户名
-  nicName: String,
-  password: String, // 密码
+    required: [true, '必填字段'],
+  }, // 账户名
+  nicName: String, // 昵称
+  password: {
+    type: String,
+    required: [true, '必填字段'],
+  }, // 密码
+  email: {
+    type: String,
+    unique: true,
+    match: [tool.validatorsExp.email, '邮箱格式不正确'],
+    required: [true, '必填字段'],
+  }, // 邮箱
   phone: {
     type: String,
     unique: true,
     match: [tool.validatorsExp.phone, '手机号码格式不正确'],
   }, // 手机号
-  email: {
-    type: String,
-    unique: true,
-    match: [tool.validatorsExp.email, '邮箱格式不正确'],
-  }, // 邮箱
   avatar: String, // 头像 跟 upload 的 path 关联
   briefDesc: String, // 个人说明
 }, {
@@ -35,13 +40,6 @@ schema
   .get(function () {
     return this.avatar ? `${this.avatar}` : '';
   });
-
-// schema.virtual('avatarObj', {
-//   ref: 'Upload',
-//   localField: 'avatar',
-//   foreignField: 'path',
-//   justOne: true,
-// });
 
 // 自动增加版本号
 /* Mongoose 仅在您使用时更新版本密钥save()。如果您使用update()，findOneAndUpdate()等等，Mongoose将不会 更新版本密钥。
