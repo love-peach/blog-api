@@ -3,10 +3,12 @@ const config = require('../config');
 
 mongoose.Promise = global.Promise;
 
+const IS_PROD = ['production', 'prod', 'pro'].includes(process.env.NODE_ENV);
+const databaseUrl = IS_PROD ? config.databasePro : config.database;
 /**
  * 连接
  */
-mongoose.connect(config.database, {
+mongoose.connect(databaseUrl, {
   useNewUrlParser: true,
   useFindAndModify: false,
   useCreateIndex: true,
