@@ -1,0 +1,11 @@
+{
+  "apps": [
+    {
+      "name": "blog-api",
+      "script": "./bin/www",
+      "instances": 0,
+      "watch": false,
+      "exec_mode": "cluster_mode"
+    }
+  ]
+}
