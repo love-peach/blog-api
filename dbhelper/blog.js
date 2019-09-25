@@ -102,7 +102,6 @@ exports.add = data => Model.create(data);
 // TODO: 当更新一个不存在的 合法id 时，会返回 204
 exports.update = (data) => {
   const { id, ...restData } = data;
-  console.log(data, 'data');
   return Model.findOneAndUpdate({ _id: id }, {
     ...restData,
   }, {

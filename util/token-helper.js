@@ -19,8 +19,7 @@ exports.checkToken = (shouldCheckPathArray, unlessCheckPathArray) => async (ctx,
     const token = tool.getTokenFromCtx(ctx);
     if (token) {
       try {
-        const a = jwt.verify(token, config.tokenSecret);
-        console.log(a, 'a');
+        jwt.verify(token, config.tokenSecret);
         await next();
       } catch (error) {
         ctx.status = 401;

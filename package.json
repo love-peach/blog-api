@@ -6,6 +6,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=development node bin/www",
     "dev": "cross-env NODE_ENV=development ./node_modules/.bin/nodemon bin/www",
+    "rc": "cross-env NODE_ENV=production ./node_modules/.bin/nodemon bin/www",
     "prd": "cross-env NODE_ENV=production pm2 start ./bin/pm2.config.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

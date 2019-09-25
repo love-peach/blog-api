@@ -9,6 +9,7 @@ const databaseUrl = IS_PROD ? config.databasePro : config.database;
  * 连接
  */
 mongoose.connect(databaseUrl, {
+  useUnifiedTopology: true,
   useNewUrlParser: true,
   useFindAndModify: false,
   useCreateIndex: true,
@@ -21,7 +22,7 @@ mongoose.connect(databaseUrl, {
  * 连接成功
  */
 mongoose.connection.on('connected', () => {
-  console.log(`Mongoose 已连接数据库 ${config.database}`);
+  console.log(`Mongoose 已连接数据库 ${databaseUrl}`);
 });
 
 /**
