@@ -10,6 +10,7 @@ const { checkDirExist } = require('./upload-helper');
  */
 const screenshot = async (params) => {
   const browser = await puppeteer.launch({
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
     defaultViewport: {
       width: 1280,
       height: 768,
