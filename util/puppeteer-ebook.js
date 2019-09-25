@@ -5,9 +5,7 @@ const puppeteer = require('puppeteer');
  * @desc 按照关键字搜索爬虫
  */
 const spiderForSearch = async (url) => {
-  const browser = await puppeteer.launch({
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  });
+  const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto(url);
 
@@ -32,9 +30,7 @@ const spiderForSearch = async (url) => {
  * @desc 根据ID爬取书信息，包括 书名，作者，简介，章节目录
  */
 const spiderForInfo = async (url) => {
-  const browser = await puppeteer.launch({
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  });
+  const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto(url);
 
@@ -74,9 +70,7 @@ const spiderForInfo = async (url) => {
 };
 
 const spiderForChapter = async (url) => {
-  const browser = await puppeteer.launch({
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  });
+  const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto(url);
 
@@ -99,9 +93,7 @@ const spiderForChapter = async (url) => {
 };
 
 const spiderForCategory = async (url) => {
-  const browser = await puppeteer.launch({
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  });
+  const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto(url);
 
@@ -147,9 +139,7 @@ const spiderForCategory = async (url) => {
 };
 
 const spiderForRank = async (url) => {
-  const browser = await puppeteer.launch({
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  });
+  const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto(url);
 
@@ -179,9 +169,7 @@ const spiderForRank = async (url) => {
 };
 
 const spiderForHome = async (url) => {
-  const browser = await puppeteer.launch({
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  });
+  const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto(url);
 
