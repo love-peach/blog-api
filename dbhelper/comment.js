@@ -12,7 +12,6 @@ const populateObj = [
   {
     path: 'from',
     select: 'userName avatar',
-    match: { userName: 'admin' },
   },
   {
     path: 'reply',
