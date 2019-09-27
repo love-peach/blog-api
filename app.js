@@ -72,6 +72,7 @@ app.use(tokenHelper.checkToken([
   '/api/users/signup',
   '/api/users/signin',
   '/api/users/signout',
+  '/api/users/forgetPwd',
 ]));
 
 // response formatter

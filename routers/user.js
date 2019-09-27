@@ -16,8 +16,11 @@ router.put('/:id', controller.update);
 // 删
 router.del('/:id', controller.delete);
 
-// 用户注册
+// 用户修改密码
 router.post('/changePwd', controller.changePwd);
+
+// 用户忘记密码
+router.post('/forgetPwd', controller.forgetPwd);
 
 // 用户注册
 router.post('/signup', controller.signUp);

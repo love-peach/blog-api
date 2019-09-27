@@ -144,7 +144,6 @@ exports.signIn = async (ctx) => {
   });
 };
 
-
 /**
  * @desc 修改密码
  */
@@ -158,6 +157,23 @@ exports.changePwd = async (ctx) => {
       token,
       ...restData,
     };
+  }).catch((err) => {
+    throw new ApiError(err.name, err.message);
+  });
+};
+
+
+/**
+ * @desc 忘记密码 重置密码
+ */
+exports.forgetPwd = async (ctx) => {
+  const dataObj = ctx.request.body;
+  await dbHelper.forgetPwd(dataObj).then((res) => {
+    if (res) {
+      ctx.body = res;
+    } else {
+      throw new ApiError(ApiErrorNames.UNEXIST_ID);
+    }
   }).catch((err) => {
     throw new ApiError(err.name, err.message);
   });
