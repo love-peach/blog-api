@@ -24,4 +24,7 @@ router.get('/info/:bookId', controller.info);
 // 查看章节 bookId: 书名；chapterId: 章节；
 router.get('/chapter/:bookId/:chapterId', controller.chapter);
 
+// 查作者写过那些书
+router.get('/author/:authorId', controller.author);
+
 module.exports = router;

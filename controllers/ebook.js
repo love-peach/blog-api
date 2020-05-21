@@ -1,12 +1,13 @@
+
 const {
-  spiderForHome, spiderForSearch, spiderForInfo, spiderForChapter, spiderForCategory, spiderForRank,
+  spiderForHome, spiderForSearch, spiderForInfo, spiderForChapter, spiderForCategory, spiderForRank, spiderForAuthor,
 } = require('../util/puppeteer-ebook');
 
 /**
  * 首页数据 返回各分类下排名前10书，上周强推9，本周强推前4
  */
 exports.home = async (ctx) => {
-  const url = 'https://www.qu.la/';
+  const url = 'http://www.bequge.cc/';
   const result = await spiderForHome(url);
   ctx.body = result;
 };
@@ -16,8 +17,8 @@ exports.home = async (ctx) => {
  */
 exports.category = async (ctx) => {
   const { categoryType } = ctx.params;
-  const origin = 'https://www.qu.la/';
-  const url = `${origin}/${categoryType}`;
+  const origin = 'http://www.bequge.cc/';
+  const url = `${origin}${categoryType}`;
   const result = await spiderForCategory(url);
   ctx.body = result;
 };
@@ -27,11 +28,9 @@ exports.category = async (ctx) => {
  */
 exports.search = async (ctx) => {
   const reqQuery = ctx.request.query;
-  const origin = 'https://sou.xanbhx.com/search';
-  const defaultQuery = 'siteid=qula';
-  const wdQuery = encodeURIComponent(reqQuery.wd);
-  const url = `${origin}?${defaultQuery}&q=${wdQuery}`;
-  const result = await spiderForSearch(url);
+  const value = reqQuery.wd.replace().slice(2);
+
+  const result = await spiderForSearch(`http://www.bequge.cc/search?keyword=${value}`);
   ctx.body = result;
 };
 
@@ -59,8 +58,8 @@ exports.rankFinish = async (ctx) => {
  */
 exports.info = async (ctx) => {
   const { bookId } = ctx.params;
-  const origin = 'https://www.qu.la/book';
-  const url = `${origin}/${bookId}`;
+  const origin = 'http://www.bequge.cc/';
+  const url = `${origin}${bookId}/`;
   const result = await spiderForInfo(url);
   ctx.body = result;
 };
@@ -70,8 +69,20 @@ exports.info = async (ctx) => {
  */
 exports.chapter = async (ctx) => {
   const { bookId, chapterId } = ctx.params;
-  const origin = 'https://www.qu.la/book';
-  const url = `${origin}/${bookId}/${chapterId}.html`;
+  const origin = 'http://www.bequge.cc/';
+  const url = `${origin}${bookId}/${chapterId}.html`;
   const result = await spiderForChapter(url);
+  ctx.body = result;
+};
+
+
+/**
+ * 查看章节 bookId: 书名；chapterId: 章节；
+ */
+exports.author = async (ctx) => {
+  const { authorId } = ctx.params;
+  const origin = 'http://www.bequge.cc/';
+  const url = `${origin}author/${authorId}/`;
+  const result = await spiderForAuthor(url);
   ctx.body = result;
 };
