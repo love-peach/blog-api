@@ -246,6 +246,7 @@ const spiderForHome = async (url) => {
   const browser = await puppeteer.launch({
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
+  console.log(url, 'url');
   const page = await browser.newPage();
   await page.goto(url);
 
