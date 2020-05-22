@@ -8,6 +8,7 @@ const {
  */
 exports.home = async (ctx) => {
   const url = 'http://www.bequge.cc/';
+  console.log(url, 'url111');
   const result = await spiderForHome(url);
   ctx.body = result;
 };
