@@ -113,7 +113,6 @@ exports.delete = async (ctx) => {
 exports.signUp = async (ctx) => {
   const dataObj = ctx.request.body;
   await dbHelper.signUp(dataObj).then((res) => {
-    console.log(res, 'res')
     const token = tokenHelper.createToken(res);
     const { password, ...restData } = res._doc;
     ctx.res.setHeader('Authorization', token);
