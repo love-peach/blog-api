@@ -29,7 +29,7 @@ exports.category = async (ctx) => {
  */
 exports.search = async (ctx) => {
   const reqQuery = ctx.request.query;
-  const value = reqQuery.wd.replace().slice(2);
+  const value = reqQuery.wd;
 
   const result = await spiderForSearch(`http://www.bequge.cc/search?keyword=${value}`);
   ctx.body = result;

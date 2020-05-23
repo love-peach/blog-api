@@ -19,7 +19,7 @@ const schema = new mongoose.Schema({
   },
   poster: {
     type: String,
-    required: [true, '必填字段'],
+    // required: [true, '必填字段'],
   }, // 海报
   tag: [{
     type: mongoose.Schema.Types.ObjectId,
