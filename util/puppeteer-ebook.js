@@ -37,7 +37,7 @@ const spiderForAuthor = async (url) => {
 /**
  * @desc 按照关键字搜索爬虫
  */
-const spiderForSearch = async (url) => {
+const spiderForSearch = async (url, wd) => {
   const browser = await puppeteer.launch({
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
@@ -84,7 +84,7 @@ const spiderForInfo = async (url) => {
     const data = {};
     const chaptersList = [];
     let indexTemp = -1;
-    const chaptersListEle = [...document.querySelectorAll('#list dl dt,dd')];
+    const chaptersListEle = [...document.querySelectorAll('.listmain dl dt,dd')];
 
     // 获取分类章节列表
     chaptersListEle.forEach((ele) => {
@@ -97,21 +97,35 @@ const spiderForInfo = async (url) => {
         const chapterEle = ele.querySelector('a');
         chaptersList[indexTemp].list.push({
           title: chapterEle.innerText,
-          bookId: chapterEle.href.split('.')[2].split('/')[1],
-          chapterId: chapterEle.href.split('.')[2].split('/')[2],
+          bookId: chapterEle.href.split('.')[2].split('/')[2],
+          chapterId: chapterEle.href.split('.')[2].split('/')[3],
         });
       }
     });
 
-    const authorEle = document.querySelector('#info > p a');
+    const infoEle = document.querySelector('.book .info');
+    const posterEle = infoEle.querySelector('.cover img');
+    const bookEle = infoEle.querySelector('h2');
+    const briefEle = infoEle.querySelector('.intro');
+    const chapterEle = infoEle.querySelector('.small span:nth-child(6) a');
+    const updateTimeEle = infoEle.querySelector('.small span:nth-child(5)');
+    const authorEle = infoEle.querySelector('.small span:nth-child(1)');
+    const statusEle = infoEle.querySelector('.small span:nth-child(3)');
+    const countEle = infoEle.querySelector('.small span:nth-child(4)');
+
 
     data.chaptersList = chaptersList;
-    data.poster = document.querySelector('#fmimg > img').src;
-    data.name = document.querySelector('#info > h1').innerText;
+    data.poster = posterEle.src;
+    data.name = bookEle.innerText;
     data.author = authorEle.innerText;
-    data.authorId = authorEle.href.split('.')[2].split('/')[2];
-    data.brief = document.querySelector('#intro').innerText;
-    data.updateTime = document.querySelector('#info p:nth-child(4)').innerText.split('：')[1];
+    // data.authorId = authorEle.href.split('.')[2].split('/')[2];
+    data.brief = briefEle.innerText;
+    data.updateTime = updateTimeEle.innerText;
+    data.lastChapter = chapterEle.innerText;
+    data.chapterId = chapterEle.href.split('.')[2].split('/')[3];
+    data.status = statusEle.innerText;
+    data.status = statusEle.innerText;
+    data.count = countEle.innerText;
     return data;
   });
   await browser.close();
@@ -129,15 +143,15 @@ const spiderForChapter = async (url) => {
     const data = {};
 
     const contentStr = document.querySelector('#content').innerText;
-    const prevHref = document.querySelector('.bottem2 a:nth-child(2)').href;
-    const nextHref = document.querySelector('.bottem2 a:nth-child(4)').href;
-    const chaptersDirectoryHref = document.querySelector('.mulu').href;
+    const prevHref = document.querySelector('.page_chapter li:nth-child(1) a').href;
+    const nextHref = document.querySelector('.page_chapter li:nth-child(3) a').href;
+    const chaptersDirectoryHref = document.querySelector('.page_chapter li:nth-child(2) a').href;
 
-    const prevChapterId = prevHref.split('.')[2].split('/')[2];
-    const nextChapterId = nextHref.split('.')[2].split('/')[2];
+    const prevChapterId = prevHref.split('.')[2].split('/')[3];
+    const nextChapterId = nextHref.split('.')[2].split('/')[3];
 
-    data.title = document.querySelector('.bookname > h1').innerText;
-    data.bookId = chaptersDirectoryHref.split('.')[2].split('/')[1];
+    data.title = document.querySelector('.content > h1').innerText;
+    data.bookId = chaptersDirectoryHref.split('.')[2].split('/')[2];
     data.chapterPrevId = prevChapterId || '';
     data.chapterNextId = nextChapterId || '';
     data.content = `${contentStr.replace(/\s{1,}/g, '\n').split('\n').slice(0, -1).join('</p><p>')
@@ -150,7 +164,6 @@ const spiderForChapter = async (url) => {
 
 const spiderForCategory = async (url) => {
   const browser = await puppeteer.launch({
-    headless: false,
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
   const page = await browser.newPage();
@@ -158,53 +171,58 @@ const spiderForCategory = async (url) => {
 
   const result = await page.evaluate(() => {
     const data = {};
-    const hotListEle = [...document.querySelectorAll('#hotcontent .item')];
-    const newListEle = [...document.querySelectorAll('#newscontent .l ul li')];
-    const clickRankEle = [...document.querySelectorAll('#newscontent .r ul li')];
+    const hotListEle = [...document.querySelectorAll('.hot .item')];
+    const newListEle = [...document.querySelectorAll('.up .l ul li')];
+    const clickRankEle = [...document.querySelectorAll('.up .r ul li')];
 
     data.hotList = hotListEle.map((ele) => {
-      const authorEle = ele.querySelector('dl > dt > a:first-child');
-      const bookEle = ele.querySelector('dl > dt > a:last-child');
+      const posterEle = ele.querySelector('.image img');
+
+      const authorEle = ele.querySelector('dl > dt > span');
+      const bookEle = ele.querySelector('dl > dt > a');
+      const briefEle = ele.querySelector('dl > dd');
       return {
-        poster: ele.querySelector('.image img').src,
+        poster: posterEle.src,
         author: authorEle.innerText,
-        authorId: authorEle.href.split('.')[2].split('/')[2],
-        brief: ele.querySelector('dl > dd').innerText,
+        // authorId: authorEle.href.split('.')[2].split('/')[2],
+        brief: briefEle.innerText,
         name: bookEle.innerText,
-        bookId: bookEle.href.split('.')[2].split('/')[1],
+        bookId: bookEle.href.split('.')[2].split('/')[2],
       };
     });
 
     data.newList = newListEle.map((ele) => {
-      const authorEle = ele.querySelector('span.s4 > a');
+      const categoryEle = ele.querySelector('span.s1');
+      const authorEle = ele.querySelector('span.s4');
       const bookEle = ele.querySelector('span.s2 > a');
       const chapterEle = ele.querySelector('span.s3 > a');
       return {
-        category: ele.querySelector('span.s1').innerText,
+        category: categoryEle.innerText,
         author: authorEle.innerText,
-        authorId: authorEle.href.split('.')[2].split('/')[2],
+        // authorId: authorEle.href.split('.')[2].split('/')[2],
         name: bookEle.innerText,
-        bookId: bookEle.href.split('.')[2].split('/')[1],
+        bookId: bookEle.href.split('.')[2].split('/')[2],
         lastChapter: chapterEle.innerText,
-        chapterId: chapterEle.href.split('.')[2].split('/')[2],
+        chapterId: chapterEle.href.split('.')[2].split('/')[3],
         updateTime: ele.querySelector('span.s5').innerText,
       };
     });
 
     data.clickRank = clickRankEle.map((ele) => {
-      const authorEle = ele.querySelector('span.s5 > a');
+      const categoryEle = ele.querySelector('span.s1');
+      const authorEle = ele.querySelector('span.s5');
       const bookEle = ele.querySelector('span.s2 > a');
       return {
-        category: ele.querySelector('span.s1').innerText,
+        category: categoryEle.innerText,
         author: authorEle.innerText,
-        authorId: authorEle.href.split('.')[2].split('/')[2],
+        // authorId: authorEle.href.split('.')[2].split('/')[2],
         name: bookEle.innerText,
-        bookId: bookEle.href.split('.')[2].split('/')[1],
+        bookId: bookEle.href.split('.')[2].split('/')[2],
       };
     });
 
-    data.newListTitle = document.querySelector('#newscontent .l > h2').innerText;
-    data.clickRankTitle = document.querySelector('#newscontent .r > h2').innerText;
+    data.newListTitle = document.querySelector('.up .l > h2').innerText;
+    data.clickRankTitle = document.querySelector('.up .r > h2').innerText;
     return data;
   });
   await browser.close();
@@ -219,24 +237,24 @@ const spiderForRank = async (url) => {
   await page.goto(url);
 
   const result = await page.evaluate(() => {
-    const topListEle = [...document.querySelectorAll('.index_toplist')];
+    const topListEle = [...document.querySelectorAll('.block')];
     return topListEle.map(ele => ({
-      title: ele.querySelector('.toptab > span').innerText,
-      rankFinal: [...ele.querySelectorAll('.topbooks:nth-child(1) > ul li')].map(child => ({
+      title: ele.querySelector('h2').innerText,
+      list: [...ele.querySelectorAll('li')].map(child => ({
         name: child.querySelector('a').innerText,
-        date: child.querySelector('span.hits').innerText,
+        date: child.querySelector('span.rate').innerText,
         bookId: child.querySelector('a').href.split('.')[2].split('/')[2],
       })),
-      rankMonth: [...ele.querySelectorAll('.topbooks:nth-child(2) > ul li')].map(child => ({
-        name: child.querySelector('a').innerText,
-        date: child.querySelector('span.hits').innerText,
-        bookId: child.querySelector('a').href.split('.')[2].split('/')[2],
-      })),
-      rankWeek: [...ele.querySelectorAll('.topbooks:nth-child(3) > ul li')].map(child => ({
-        name: child.querySelector('a').innerText,
-        date: child.querySelector('span.hits').innerText,
-        bookId: child.querySelector('a').href.split('.')[2].split('/')[2],
-      })),
+      // rankMonth: [...ele.querySelectorAll('.topbooks:nth-child(2) > ul li')].map(child => ({
+      //   name: child.querySelector('a').innerText,
+      //   date: child.querySelector('span.hits').innerText,
+      //   bookId: child.querySelector('a').href.split('.')[2].split('/')[2],
+      // })),
+      // rankWeek: [...ele.querySelectorAll('.topbooks:nth-child(3) > ul li')].map(child => ({
+      //   name: child.querySelector('a').innerText,
+      //   date: child.querySelector('span.hits').innerText,
+      //   bookId: child.querySelector('a').href.split('.')[2].split('/')[2],
+      // })),
     }));
   });
   await browser.close();
@@ -251,7 +269,6 @@ const spiderForHome = async (url) => {
     // timeout: 0,
     args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-extensions'],
   });
-  console.log(url, 'url21212');
   const page = await browser.newPage();
   const UA = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/63.0.3239.84 Chrome/63.0.3239.84 Safari/537.36';
 
@@ -263,9 +280,9 @@ const spiderForHome = async (url) => {
     const data = {};
     const hotListEle = [...document.querySelectorAll('.hot .l .item')];
     const tjListEle = [...document.querySelectorAll('.hot .r li')];
-    const rankListEle = [...document.querySelectorAll('.content')];
-    const lastUpdateEle = [...document.querySelectorAll('#newscontent .l li')];
-    const lastRecordEle = [...document.querySelectorAll('#newscontent .r li')];
+    const rankListEle = [...document.querySelectorAll('.block')];
+    const lastUpdateEle = [...document.querySelectorAll('.up .l li')];
+    const lastRecordEle = [...document.querySelectorAll('.up .r li')];
 
     data.hotList = hotListEle.map((ele) => {
       const posterEle = ele.querySelector('.image img');
@@ -282,82 +299,80 @@ const spiderForHome = async (url) => {
       };
     });
 
-    // data.tjList = tjListEle.map((ele) => {
-    //   const categoryEle = ele.querySelector('span.s1');
-    //   const authorEle = ele.querySelector('span.s5');
-    //   const bookEle = ele.querySelector('span.s2 > a');
+    data.tjList = tjListEle.map((ele) => {
+      const categoryEle = ele.querySelector('span.s1');
+      const authorEle = ele.querySelector('span.s5');
+      const bookEle = ele.querySelector('span.s2 > a');
 
-    //   return {
-    //     category: categoryEle.innerText,
-    //     author: authorEle.innerText,
-    //     //authorId: authorEle.href.split('.')[2].split('/')[2],
-    //     name: bookEle.innerText,
-    //     bookId: bookEle.href.split('.')[2].split('/')[1],
-    //   };
-    // });
+      return {
+        category: categoryEle.innerText,
+        author: authorEle.innerText,
+        // authorId: authorEle.href.split('.')[2].split('/')[2],
+        name: bookEle.innerText,
+        bookId: bookEle.href.split('.')[2].split('/')[2],
+      };
+    });
 
-    // data.rankList = rankListEle.map((ele) => {
-    //   const topEle = ele.querySelector('.top');
-    //   const topBookEle = topEle.querySelector('.image a');
-    //   return {
-    //     category: ele.querySelector('h2').innerText,
-    //     top: {
-    //       poster: topEle.querySelector('img').src,
-    //       name: topBookEle.title,
-    //       bookId: topBookEle.href.split('.')[2].split('/')[1],
-    //       brief: topEle.querySelector('dl > dd').innerText,
-    //     },
-    //     list: [...ele.querySelectorAll('ul li')].map((child) => {
-    //       const bookEle = child.querySelector('a');
-    //       //const authorEle = child.querySelector('a:last-child');
-    //       return {
-    //         author: child.lastChild.textContent.slice(1),
-    //         // authorId: authorEle.href.split('.')[2].split('/')[2],
-    //         name: bookEle.innerText,
-    //         bookId: bookEle.href.split('.')[2].split('/')[1],
-    //       };
-    //     }),
-    //   };
-    // });
+    data.rankList = rankListEle.map((ele) => {
+      const topEle = ele.querySelector('.top');
+      const topPosterEle = topEle.querySelector('.image img');
+      const topBookEle = topEle.querySelector('dl > dt > a');
+      const topBriefEle = topEle.querySelector('dl > dd');
+      return {
+        category: ele.querySelector('h2').innerText,
+        top: {
+          poster: topPosterEle.src,
+          name: topBookEle.innerText,
+          bookId: topBookEle.href.split('.')[2].split('/')[2],
+          brief: topBriefEle.innerText,
+        },
+        list: [...ele.querySelectorAll('ul li')].map((child) => {
+          const bookEle = child.querySelector('a');
+          // const authorEle = child.querySelector('a:last-child');
+          return {
+            author: child.lastChild.textContent.slice(1),
+            // authorId: authorEle.href.split('.')[2].split('/')[2],
+            name: bookEle.innerText,
+            bookId: bookEle.href.split('.')[2].split('/')[2],
+          };
+        }),
+      };
+    });
 
-    // data.lastUpdate = lastUpdateEle.map((ele) => {
-    //   const authorEle = ele.querySelector('span.s4');
-    //   const bookEle = ele.querySelector('span.s2 > a');
-    //   const chapterEle = ele.querySelector('span.s3 > a');
-    //   const categoryEle = ele.querySelector('span.s1');
-    //   return {
-    //     category: categoryEle.innerText,
-    //     author: authorEle.innerText,
-    //     // authorId: authorEle.href.split('.')[2].split('/')[2],
-    //     name: bookEle.innerText,
-    //     bookId: bookEle.href.split('.')[2].split('/')[1],
-    //     lastChapter: chapterEle.innerText,
-    //     chapterId: chapterEle.href.split('.')[2].split('/')[2],
-    //     updateTime: ele.querySelector('span.s5').innerText,
-    //   };
-    // });
+    data.lastUpdate = lastUpdateEle.map((ele) => {
+      const authorEle = ele.querySelector('span.s4');
+      const bookEle = ele.querySelector('span.s2 > a');
+      const chapterEle = ele.querySelector('span.s3 > a');
+      const categoryEle = ele.querySelector('span.s1');
+      return {
+        category: categoryEle.innerText,
+        author: authorEle.innerText,
+        // authorId: authorEle.href.split('.')[2].split('/')[2],
+        name: bookEle.innerText,
+        bookId: bookEle.href.split('.')[2].split('/')[2],
+        lastChapter: chapterEle.innerText,
+        chapterId: chapterEle.href.split('.')[2].split('/')[3],
+        updateTime: ele.querySelector('span.s5').innerText,
+      };
+    });
 
-    // data.lastRecord = lastRecordEle.map((ele) => {
-    //   const authorEle = ele.querySelector('span.s5');
-    //   const bookEle = ele.querySelector('span.s2 > a');
-    //   const categoryEle = ele.querySelector('span.s1');
-    //   return {
-    //     category: categoryEle.innerText,
-    //     author: authorEle.innerText,
-    //     // authorId: authorEle.href.split('.')[2].split('/')[2],
-    //     name: bookEle.innerText,
-    //     bookId: bookEle.href.split('.')[2].split('/')[1],
-    //   };
-    // });
+    data.lastRecord = lastRecordEle.map((ele) => {
+      const authorEle = ele.querySelector('span.s5');
+      const bookEle = ele.querySelector('span.s2 > a');
+      const categoryEle = ele.querySelector('span.s1');
+      return {
+        category: categoryEle.innerText,
+        author: authorEle.innerText,
+        // authorId: authorEle.href.split('.')[2].split('/')[2],
+        name: bookEle.innerText,
+        bookId: bookEle.href.split('.')[2].split('/')[2],
+      };
+    });
 
-    // data.lastUpdateTitle = document.querySelector('#newscontent .l > h2').innerText;
-    // data.lastRecordTitle = document.querySelector('#newscontent .r > h2').innerText;
-
-    // data.lastRecordTitle = document.getElementById('hotcontent').textContent
+    data.lastUpdateTitle = document.querySelector('.up .l > h2').innerText;
+    data.lastRecordTitle = document.querySelector('.up .r > h2').innerText;
 
     return data;
-  }).catch((err) => {
-    console.log(err, 'err1321313');
   });
   await browser.close();
   return result;

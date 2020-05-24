@@ -20,8 +20,8 @@ exports.home = async (ctx) => {
  */
 exports.category = async (ctx) => {
   const { categoryType } = ctx.params;
-  const origin = 'http://www.bequge.cc/';
-  const url = `${origin}${categoryType}`;
+  // http://www.shuquge.com/category/1_1.html
+  const url = `${ebookOrigin}category/${categoryType}.html`;
   const result = await spiderForCategory(url);
   ctx.body = result;
 };
@@ -32,8 +32,9 @@ exports.category = async (ctx) => {
 exports.search = async (ctx) => {
   const reqQuery = ctx.request.query;
   const value = reqQuery.wd;
+  // http://www.shuquge.com/search.php
 
-  const result = await spiderForSearch(`http://www.bequge.cc/search?keyword=${value}`);
+  const result = await spiderForSearch(`${ebookOrigin}search.php`, value);
   ctx.body = result;
 };
 
@@ -42,7 +43,8 @@ exports.search = async (ctx) => {
  * 排行榜
  */
 exports.rank = async (ctx) => {
-  const url = 'https://www.qu.la/paihangbang/';
+  // http://www.shuquge.com/top.html
+  const url = `${ebookOrigin}top.html`;
   const result = await spiderForRank(url);
   ctx.body = result;
 };
@@ -61,8 +63,8 @@ exports.rankFinish = async (ctx) => {
  */
 exports.info = async (ctx) => {
   const { bookId } = ctx.params;
-  const origin = 'http://www.bequge.cc/';
-  const url = `${origin}${bookId}/`;
+  // http://www.shuquge.com/txt/63542/index.html
+  const url = `${ebookOrigin}txt/${bookId}/index.html`;
   const result = await spiderForInfo(url);
   ctx.body = result;
 };
@@ -72,8 +74,8 @@ exports.info = async (ctx) => {
  */
 exports.chapter = async (ctx) => {
   const { bookId, chapterId } = ctx.params;
-  const origin = 'http://www.bequge.cc/';
-  const url = `${origin}${bookId}/${chapterId}.html`;
+  // http://www.shuquge.com/txt/63542/9645082.html
+  const url = `${ebookOrigin}txt/${bookId}/${chapterId}.html`;
   const result = await spiderForChapter(url);
   ctx.body = result;
 };
