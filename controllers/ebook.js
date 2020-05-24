@@ -3,12 +3,13 @@ const {
   spiderForHome, spiderForSearch, spiderForInfo, spiderForChapter, spiderForCategory, spiderForRank, spiderForAuthor,
 } = require('../util/puppeteer-ebook');
 
+const ebookOrigin = 'https://www.52bqg.com/';
+
 /**
  * 首页数据 返回各分类下排名前10书，上周强推9，本周强推前4
  */
 exports.home = async (ctx) => {
-  const url = 'http://www.bequge.cc/';
-  console.log(url, 'url111');
+  const url = ebookOrigin;
   const result = await spiderForHome(url);
   ctx.body = result;
 };
