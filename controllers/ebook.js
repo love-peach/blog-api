@@ -3,7 +3,8 @@ const {
   spiderForHome, spiderForSearch, spiderForInfo, spiderForChapter, spiderForCategory, spiderForRank, spiderForAuthor,
 } = require('../util/puppeteer-ebook');
 
-const ebookOrigin = 'https://www.52bqg.com/';
+// const ebookOrigin = 'https://www.52bqg.com/';
+const ebookOrigin = 'http://www.shuquge.com/';
 
 /**
  * 首页数据 返回各分类下排名前10书，上周强推9，本周强推前4

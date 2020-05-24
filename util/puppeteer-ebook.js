@@ -246,45 +246,39 @@ const spiderForRank = async (url) => {
 const spiderForHome = async (url) => {
   const browser = await puppeteer.launch({
     // headless: false,
-    // waitUntil: 'domcontentloaded',
-    waitUntil: 'load',
-    timeout: 0,
+    waitUntil: 'domcontentloaded',
+    // waitUntil: 'load',
+    // timeout: 0,
     args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-extensions'],
   });
   console.log(url, 'url21212');
   const page = await browser.newPage();
-  const UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/63.0.3239.84 Chrome/63.0.3239.84 Safari/537.36";
+  const UA = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/63.0.3239.84 Chrome/63.0.3239.84 Safari/537.36';
 
-  // await page.setUserAgent(UA),
-  await page.goto(url, {
-    timeout: 0,
-  });
+  await page.setUserAgent(UA);
 
-  page.on('console', msg => console.log('PAGE LOG:', ...msg.args));
-  // await page.goto('https://www.baidu.com/');
-
-  // await page.waitForSelector('#main')
+  await page.goto(url);
 
   const result = await page.evaluate(() => {
     const data = {};
-    const hotListEle = [...document.querySelectorAll('#hotcontent .l .item')];
-    const tjListEle = [...document.querySelectorAll('#hotcontent .r li')];
+    const hotListEle = [...document.querySelectorAll('.hot .l .item')];
+    const tjListEle = [...document.querySelectorAll('.hot .r li')];
     const rankListEle = [...document.querySelectorAll('.content')];
     const lastUpdateEle = [...document.querySelectorAll('#newscontent .l li')];
     const lastRecordEle = [...document.querySelectorAll('#newscontent .r li')];
 
-    console.log(hotListEle);
-
     data.hotList = hotListEle.map((ele) => {
+      const posterEle = ele.querySelector('.image img');
+      const bookEle = ele.querySelector('dl > dt > a');
       const authorEle = ele.querySelector('dl > dt > span');
-      const bookEle = ele.querySelector('.image a');
+      const briefEle = ele.querySelector('dl > dd');
       return {
-        poster: ele.querySelector('img').src,
+        poster: posterEle.src,
         author: authorEle.innerText,
-        //authorId: authorEle.href.split('.')[2].split('/')[2],
-        name: bookEle.title,
-        bookId: bookEle.href.split('.')[2].split('/')[1],
-        brief: ele.querySelector('dl > dd').innerText,
+        // authorId: authorEle.href.split('.')[2].split('/')[2],
+        name: bookEle.innerText,
+        bookId: bookEle.href.split('.')[2].split('/')[2],
+        brief: briefEle.innerText,
       };
     });
 
@@ -362,8 +356,8 @@ const spiderForHome = async (url) => {
     // data.lastRecordTitle = document.getElementById('hotcontent').textContent
 
     return data;
-  }).catch(err => {
-    console.log(err, 'err1321313')
+  }).catch((err) => {
+    console.log(err, 'err1321313');
   });
   await browser.close();
   return result;
