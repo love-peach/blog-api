@@ -246,13 +246,14 @@ const spiderForRank = async (url) => {
 const spiderForHome = async (url) => {
   const browser = await puppeteer.launch({
     timeout: 0,
-    headless: false,
+    // headless: false,
     waitUntil: 'domcontentloaded',
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
   console.log(url, 'url21212');
   const page = await browser.newPage();
-  await page.goto(url);
+  // await page.goto(url);
+  await page.goto('https://www.baidu.com/');
 
   const result = await page.evaluate(() => {
     const data = {};
@@ -262,18 +263,18 @@ const spiderForHome = async (url) => {
     const lastUpdateEle = [...document.querySelectorAll('#newscontent .l li')];
     const lastRecordEle = [...document.querySelectorAll('#newscontent .r li')];
 
-    data.hotList = hotListEle.map((ele) => {
-      const authorEle = ele.querySelector('dl > dt > span');
-      const bookEle = ele.querySelector('.image a');
-      return {
-        poster: ele.querySelector('img').src,
-        author: authorEle.innerText,
-        //authorId: authorEle.href.split('.')[2].split('/')[2],
-        name: bookEle.title,
-        bookId: bookEle.href.split('.')[2].split('/')[1],
-        brief: ele.querySelector('dl > dd').innerText,
-      };
-    });
+    // data.hotList = hotListEle.map((ele) => {
+    //   const authorEle = ele.querySelector('dl > dt > span');
+    //   const bookEle = ele.querySelector('.image a');
+    //   return {
+    //     poster: ele.querySelector('img').src,
+    //     author: authorEle.innerText,
+    //     //authorId: authorEle.href.split('.')[2].split('/')[2],
+    //     name: bookEle.title,
+    //     bookId: bookEle.href.split('.')[2].split('/')[1],
+    //     brief: ele.querySelector('dl > dd').innerText,
+    //   };
+    // });
 
     // data.tjList = tjListEle.map((ele) => {
     //   const categoryEle = ele.querySelector('span.s1');
@@ -346,7 +347,8 @@ const spiderForHome = async (url) => {
     // data.lastUpdateTitle = document.querySelector('#newscontent .l > h2').innerText;
     // data.lastRecordTitle = document.querySelector('#newscontent .r > h2').innerText;
 
-    data.lastRecordTitle = document.querySelector('#newscontent')
+    // data.lastRecordTitle = document.querySelector('#newscontent')
+    data.text = document.getElementById('su').className;
 
     return data;
   });
