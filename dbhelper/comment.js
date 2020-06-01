@@ -38,7 +38,8 @@ exports.findAll = () => Model.find().populate(populateObj).exec();
  */
 exports.findSome = (data) => {
   const {
-    blogId, from, content, status = true, page = 1, limit = 10, sort = '-createdAt',
+    // blogId, from, content, status = true, page = 1, limit = 10, sort = '-createdAt',
+    blogId, from, content, status, page = 1, limit = 10, sort = '-createdAt',
   } = data;
   const query = {};
   const options = {
