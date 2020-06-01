@@ -48,11 +48,15 @@ const screenshot = async (params) => {
  */
 const uploadScreenshot = async (filePath, token, origin) => {
   const file = await fs.createReadStream(filePath);
+  const fileItemNameArr = filePath.split('/');
+  const fileItemName = fileItemNameArr[fileItemNameArr.length - 1];
+
   const options = {
     method: 'POST',
     uri: `${origin}/api/upload`,
     formData: {
       usedFor: 'screenshot',
+      fileItemName,
       file: {
         value: file,
         options: {},
