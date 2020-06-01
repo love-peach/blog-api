@@ -112,7 +112,7 @@ const tengxunUploader = async (file, params) => {
  * @desc 阿里云对象存储
  */
 const aliOssUploader = async (file, params) => {
-  const fileKey = `${getFileKey(file, params.usedFor)}/${file.name}`;
+  const fileKey = `${getFileKey(file, params.usedFor)}/${params.fileItemName}`;
   return new Promise((resolve, reject) => {
     client
       .put(fileKey, file.path)

@@ -117,7 +117,7 @@ exports.add = async (ctx) => {
   await aliOssUploader(file, params)
     .then(async (data) => {
       const dataObj = {
-        name: file.name,
+        name: params.fileItemName,
         path: data.url,
         size: file.size,
         usedFor: params.usedFor,
