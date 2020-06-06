@@ -79,6 +79,9 @@ const getFileKey = (file, usedFor = '') => {
     case 'screenshot':
       fileKey = `${fileTypeDir}/screenshot`;
       break;
+    case 'article':
+      fileKey = `${fileTypeDir}/article/${getFileDateDir()}`;
+      break;
     default:
       fileKey = `${fileTypeDir}/${getFileDateDir()}`;
   }
