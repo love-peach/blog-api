@@ -2,6 +2,9 @@ const Koa = require('koa');
 
 const path = require('path');
 
+const cors = require('koa2-cors');
+
+
 const app = new Koa();
 const json = require('koa-json');
 const onerror = require('koa-onerror');
@@ -16,7 +19,6 @@ const { getFileKey, checkDirExist } = require('./util/upload-helper');
 
 require('./dbhelper/db');
 
-const cors = require('cors');
 
 app.use(cors());
 
