@@ -16,6 +16,10 @@ const { getFileKey, checkDirExist } = require('./util/upload-helper');
 
 require('./dbhelper/db');
 
+const cors = require('cors');
+
+app.use(cors());
+
 // error handler
 onerror(app);
 
