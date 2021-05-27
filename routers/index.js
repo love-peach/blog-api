@@ -11,6 +11,7 @@ const resourceType = require('./resourceType');
 const comment = require('./comment');
 const reply = require('./reply');
 const ebook = require('./ebook');
+const lowcode = require('./lowcode');
 
 router.prefix('/api');
 
@@ -25,5 +26,6 @@ router.use('/upload', upload.routes(), upload.allowedMethods());
 router.use('/resources', resource.routes(), resource.allowedMethods());
 router.use('/resourceTypes', resourceType.routes(), resourceType.allowedMethods());
 router.use('/ebooks', ebook.routes(), ebook.allowedMethods());
+router.use('/lowcode', lowcode.routes(), lowcode.allowedMethods());
 
 module.exports = router;
